@@ -5,7 +5,7 @@ import theme from "../../styles/theme";
 
 const Head = styled.div`
   width: 100%;
-  height: 3em;
+  height: 5em;
   background-color: ${theme.primaryColor};
 `;
 
