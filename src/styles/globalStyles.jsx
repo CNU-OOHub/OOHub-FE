@@ -68,22 +68,14 @@ button {
   background-color: transparent;
   cursor: pointer;
 }
+
 input, select {
-  border-bottom: 2px solid ${theme.inputColor};
-  font-weight: 900;
-  font-size: 0.8rem;
-  height: 4vh;
+  border: 1px solid grey;
+  font-size: 16px;
 }
-input:focus, select:focus {
-  outline: none;
-}
-input, select {
-  border-bottom: 2px solid #808080;
-  font-weight: 900;
-  font-size: 0.8rem;
-  height: 4vh;
-  font-family: 'inter';
-}
+
+
+
 `;
 
 export default GlobalStyle;
