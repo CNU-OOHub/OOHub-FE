@@ -24,3 +24,6 @@ yarn-error.log*
 
 # file tree
 filetree.txt
+
+# package
+package-lock.json

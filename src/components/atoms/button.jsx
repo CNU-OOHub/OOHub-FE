@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import theme from "../../styles/theme";
 
 const CustomButton = styled.button`
@@ -11,7 +11,15 @@ const CustomButton = styled.button`
   background-color: ${(props) => props.bgColor};
   font-size: ${(props) => `${props.fontSize}rem`};
   font-weight: ${(props) => props.fontWeight};
-  border: ${(props) => props.border};
+  //border: ${(props) => props.border};
+  ${(props) =>
+    props.hoverEvent &&
+    css`
+      &:hover {
+        box-shadow: 1px 1px 3px 4px lightgrey;
+        transition: 0.4s;
+      }
+    `}
 `;
 
 const Button = ({
@@ -24,6 +32,7 @@ const Button = ({
   fontSize = 1,
   fontWeight = 700,
   border = "none",
+  hoverEvent = false,
 }) => {
   return (
     <CustomButton
@@ -35,6 +44,7 @@ const Button = ({
       fontSize={fontSize}
       fontWeight={fontWeight}
       border={border}
+      hoverEvent={hoverEvent}
       type="button"
     >
       {children}

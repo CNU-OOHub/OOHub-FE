@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/organisms/header";
+import LogIn from "./components/pages/logIn";
 import SignUp from "./components/pages/signUp";
 
 const Router = () => {
@@ -10,6 +11,8 @@ const Router = () => {
       <Header />
       <Routes>
         <Route path="/" element={<SignUp />} />
+        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/logIn" element={<LogIn />} />
       </Routes>
     </BrowserRouter>
   );
