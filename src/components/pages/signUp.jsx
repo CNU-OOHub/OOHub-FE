@@ -12,7 +12,6 @@ import DropDown from "../atoms/dropdown";
 import Input from "../atoms/input";
 import FlexColumn from "../molecules/flexColumn";
 import { useNavigate } from "react-router-dom";
-import Header from "../organisms/header";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 
