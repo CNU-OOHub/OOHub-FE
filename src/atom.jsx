@@ -1,3 +1,3 @@
 import { atom } from "recoil";
 
-export {};
+export const loginState = atom({ key: "login", default: false });
