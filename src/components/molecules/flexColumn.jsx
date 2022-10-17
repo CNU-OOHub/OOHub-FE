@@ -14,6 +14,7 @@ const Container = styled.div`
   padding-left: ${(props) => `${props.horizontalPadding}rem`};
   padding-right: ${(props) => `${props.horizontalPadding}rem`};
   align-content: center;
+  //align-items: center;
   text-align: center;
   vertical-align: middle;
 `;
