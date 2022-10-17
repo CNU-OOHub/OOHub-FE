@@ -52,7 +52,7 @@ const SignUp = () => {
 
   const SignUpButtonClicked = () => {
     if (hasBlank()) {
-      alert("작성");
+      alert("빈칸없이 작성해주세요.");
     } else {
       console.log(userInfo);
       addUserMutation.mutate(userInfo);
