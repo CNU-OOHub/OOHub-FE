@@ -14,6 +14,8 @@ const Container = styled.div`
   padding-left: ${(props) => `${props.horizontalPadding}rem`};
   padding-right: ${(props) => `${props.horizontalPadding}rem`};
   align-content: center;
+  text-align: center;
+  vertical-align: middle;
 `;
 
 const FlexColumn = ({
@@ -21,7 +23,7 @@ const FlexColumn = ({
   justifyContent = "space-between",
   verticalPadding = 0,
   horizontalPadding = 0,
-  height = 85,
+  height = 100,
   width = 25,
 }) => {
   return (

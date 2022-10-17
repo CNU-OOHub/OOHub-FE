@@ -13,6 +13,8 @@ import Input from "../atoms/input";
 import FlexColumn from "../molecules/flexColumn";
 import { useNavigate } from "react-router-dom";
 import Header from "../organisms/header";
+import Text from "../atoms/text";
+import theme from "../../styles/theme";
 
 const Logo = styled.img`
   width: 20rem;
@@ -59,7 +61,7 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "92vh" }}>
       <FlexColumn justifyContent="space-evenly" width={25}>
         <Logo src={logo} alt="oohub" />
         <Input
@@ -99,6 +101,17 @@ const SignUp = () => {
         >
           Sign Up
         </Button>
+        <div>
+          <Text>Do you have an account? </Text>
+          <Text
+            onClick={() => {
+              navigate("/logIn");
+            }}
+            color={theme.primaryColor}
+          >
+            SIGNIN!
+          </Text>
+        </div>
       </FlexColumn>
     </div>
   );
