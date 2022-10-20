@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { addUser, authUser } from "../../api";
+import { authUser } from "../../api";
 import logo from "../../assets/images/logo.png";
 import Button from "../atoms/button";
 import Input from "../atoms/input";
@@ -9,6 +9,7 @@ import FlexColumn from "../molecules/flexColumn";
 import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
+import Body from "../atoms/body";
 
 const Logo = styled.img`
   width: 20rem;
@@ -52,7 +53,7 @@ const LogIn = () => {
   };
 
   return (
-    <div style={{ height: "92vh" }}>
+    <Body>
       <FlexColumn verticalPadding={5} justifyContent="space-evenly" width={25}>
         <Logo src={logo} alt="oohub" />
         <Input
@@ -91,7 +92,7 @@ const LogIn = () => {
           </Text>
         </div>
       </FlexColumn>
-    </div>
+    </Body>
   );
 };
 

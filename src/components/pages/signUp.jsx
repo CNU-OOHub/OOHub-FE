@@ -14,6 +14,7 @@ import FlexColumn from "../molecules/flexColumn";
 import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
+import Body from "../atoms/body";
 
 const Logo = styled.img`
   width: 20rem;
@@ -45,8 +46,8 @@ const SignUp = () => {
 
   const addUserMutation = useMutation((userInfo) => addUser(userInfo), {
     onSuccess: () => {
+      navigate("/login");
       queryClient.invalidateQueries();
-      navigate("/logIn");
     },
   });
 
@@ -54,13 +55,12 @@ const SignUp = () => {
     if (hasBlank()) {
       alert("빈칸없이 작성해주세요.");
     } else {
-      console.log(userInfo);
       addUserMutation.mutate(userInfo);
     }
   };
 
   return (
-    <div style={{ height: "92vh" }}>
+    <Body>
       <FlexColumn justifyContent="space-evenly" width={25}>
         <Logo src={logo} alt="oohub" />
         <Input
@@ -112,7 +112,7 @@ const SignUp = () => {
           </Text>
         </div>
       </FlexColumn>
-    </div>
+    </Body>
   );
 };
 
