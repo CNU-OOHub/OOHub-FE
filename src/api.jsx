@@ -1,6 +1,7 @@
 import SERVER from "./url";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 // 회원가입
 export const addUser = async (userInfo) => {
@@ -169,6 +170,13 @@ export const getAllOrganization = async (username) => {
     throw new Error('fetch all organization error');
   }
 };
+
+export const useGetAllOrganizations = (username) => {
+  return useQuery(['organizations'], () => getAllOrganization(username),{
+    staleTime: 5000,
+    cacheTime: Infinity
+  })
+}
 
 
 //////////////////////공유 파일/////////////////////////
