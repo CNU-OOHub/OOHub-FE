@@ -76,6 +76,15 @@ export const addWorkspace = async (workspaceInfo) => {
 };
 
 // workspace 사용량 조회
+
+// 파일 조회 
+export const useWorkspaceUsage = () => {
+  return useQuery(['usage'], () => getWorkspaceUsage(),{
+    staleTime: 5000,
+    cacheTime: Infinity
+  })
+}
+
 export const getWorkspaceUsage = async () => {
   try {
     const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {});

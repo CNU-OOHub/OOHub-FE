@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
-import FlexColumn from "../molecules/flexColumn";
-import FlexRow from "../molecules/flexRow";
+import { useWorkspaceUsage } from "../../api";
 
 
 const Mdiv = styled.div`
@@ -15,14 +14,17 @@ const Mdiv = styled.div`
   border: 1.5px solid black;
 `;
 
+
 const Monitoring = () => {
+
+  const { data: usage } = useWorkspaceUsage();
 
   return (
     <div style={{ height: "92vh" }}>
         <div style={{ paddingTop: 50, paddingLeft:50, paddingBottom:10}}>
         <Text fontSize='1.7' fontWeight='bold'> {'>'} Resource Monitoring For admin</Text>
         </div>
-        <div style={{marginLeft:"5vh"}}>
+        <div style={{marginLeft:"5vh", width: '100%'}}>
           <div style={{ margin: 70, paddingLeft: 60, display: 'flex'}}>
           <Text fontSize='1.5'> CPU </Text>
           <Mdiv > </Mdiv>
@@ -38,9 +40,9 @@ const Monitoring = () => {
           <Mdiv > </Mdiv>
           <Text fontSize='1.5'> 5.629 Mib </Text>
           </div>
-          <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
-          <Text fontSize='1.5'> 사용한 공간 </Text>
-          <Text fontSize='1.5'> 3425 bytes </Text>
+          <div style={{ textAlign: 'center',justifyContent: 'space-between', paddingTop: 20 }}>
+          <Text fontSize='2' fontWeight="40"> 사용한 공간 </Text>
+          <Text fontSize='2' marginLeft="40" fontWeight="700" color="red"> &nbsp; {usage} bytes </Text>
           </div>
         </div>
     </div>
