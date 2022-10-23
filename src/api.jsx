@@ -1,6 +1,7 @@
 import SERVER from "./url";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 // 회원가입
 export const addUser = async (userInfo) => {
@@ -251,6 +252,13 @@ export const runLine = async (commandInfo) => {
 };
 
 // 파일 조회 
+export const useGetFile = () => {
+  return useQuery(['file'], () => getFile(),{
+    staleTime: 5000,
+    cacheTime: Infinity
+  })
+}
+
 export const getFile = async () => {
   try {
       const response = await axios.get(`${SERVER}/api/v1/files`, {});
@@ -261,6 +269,13 @@ export const getFile = async () => {
 };
 
 // 파일 전체 조회 
+export const useGetFiles = () => {
+  return useQuery(['files'], () => getAllFile(),{
+    staleTime: 5000,
+    cacheTime: Infinity
+  })
+}
+
 export const getAllFile = async () => {
   try {
       const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
@@ -282,3 +297,19 @@ export const addFile = async (fileInfo) => {
   }
 };
 
+// docker api 
+export const useGetResources = () => {
+  return useQuery(['files'], () => getAllFile(),{
+    staleTime: 5000,
+    cacheTime: Infinity
+  })
+}
+
+export const getAllResource = async () => {
+  try {
+      const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
+      return response;
+  } catch (err) {
+      throw new Error('read all file error');
+  }
+};
