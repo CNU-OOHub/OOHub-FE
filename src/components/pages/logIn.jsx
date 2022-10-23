@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { authUser } from "../../api";
 import logo from "../../assets/images/logo.png";
@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { loginState } from "../../atom";
 
 const Logo = styled.img`
   width: 20rem;
@@ -35,6 +37,11 @@ const LogIn = () => {
       return false;
     }
   };
+
+  const setLogin = useSetRecoilState(loginState);
+  useEffect(() => {
+    setLogin(false);
+  });
 
   const authUserMutation = useMutation((userInfo) => authUser(userInfo), {
     onSuccess: () => {
