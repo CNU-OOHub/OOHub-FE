@@ -6,6 +6,7 @@ const Text = ({
   fontWeight = "normal",
   color = "black",
   marginTop = "0vh",
+  marginLeft = "0vh",
   onClick,
 }) => {
   return onClick ? (
@@ -28,6 +29,7 @@ const Text = ({
         fontWeight: fontWeight,
         color: color,
         marginTop: marginTop,
+        marginLeft: marginLeft,
         fontFamily: "inter",
       }}
     >
