@@ -76,8 +76,6 @@ export const addWorkspace = async (workspaceInfo) => {
 };
 
 // workspace 사용량 조회
-
-// 파일 조회 
 export const useWorkspaceUsage = () => {
   return useQuery(['usage'], () => getWorkspaceUsage(),{
     staleTime: 5000,
@@ -87,13 +85,13 @@ export const useWorkspaceUsage = () => {
 
 export const getWorkspaceUsage = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {});
+    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {headers: {Authorization: "Bearer {}",}});
     return data;
   } catch (err) {
     throw new Error('fetch worksapce usage error');
   }
 };
-
+ 
 
 /////////////////////Department//////////////////////////
 // 부서 목록 조회
@@ -306,9 +304,9 @@ export const addFile = async (fileInfo) => {
   }
 };
 
-// docker api 
+// resource monitoring 
 export const useGetResources = () => {
-  return useQuery(['files'], () => getAllFile(),{
+  return useQuery(['resources'], () => getAllResource(),{
     staleTime: 5000,
     cacheTime: Infinity
   })
@@ -316,9 +314,10 @@ export const useGetResources = () => {
 
 export const getAllResource = async () => {
   try {
-      const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
+      const response = await axios.get(`${SERVER}/api/v1/monitoring/resources`, {});
       return response;
   } catch (err) {
       throw new Error('read all file error');
   }
 };
+
