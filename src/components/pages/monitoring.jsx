@@ -7,14 +7,13 @@ import { useEffect, useState } from "react";
 
 
 const Mdiv = styled.div`
-  width: 50%;
-  height: 40px;
+  width: ${(props) => `${props.width}%`};
+  height: 30px;
   background-color: ${theme.primaryColor};
   margin-left: 50px;
   margin-right: 20px;
   border: 1.5px solid black;
 `;
-
 
 const Monitoring = () => {
 
@@ -24,9 +23,6 @@ const Monitoring = () => {
   console.log("resouce:"+JSON.stringify(resources));
   console.log("workspaceUsage:"+JSON.stringify(workspaceUsage));
 
-
-  // useEffect(()=>{
-  // },[resources])
   
   return (
     (typeof resources !== "undefined")&& (typeof workspaceUsage !== "undefined") ? (<div style={{ height: "92vh" }}>
@@ -36,18 +32,18 @@ const Monitoring = () => {
     <div style={{marginLeft:"5vh", width: '100%'}}>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex'}}>
       <Text fontSize='1.5'> CPU </Text>
-      <Mdiv > </Mdiv>
+      <Mdiv width={resources.data.cpuUsagePercent}></Mdiv>
       <Text fontSize='1.5'> {resources.data.cpuUsagePercent}% </Text>
       </div >
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
       <Text fontSize='1.5'> GPU </Text>
-      <Mdiv > </Mdiv>
+      <Mdiv width='0'></Mdiv>
       <Text fontSize='1.5'> 0.00% </Text>
       </div>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
       <Text fontSize='1.5'> RAM </Text>
-      <Mdiv > </Mdiv>
-      <Text fontSize='1.5'> {resources.data.usedRamUsage} </Text>
+      <Mdiv width={resources.data.usedRamUsage}> </Mdiv>
+      <Text fontSize='1.5'> {resources.data.usedRamUsage } Mib </Text>
       </div>
       <div style={{ textAlign: 'center',justifyContent: 'space-between', paddingTop: 20 }}>
       <Text fontSize='2' fontWeight="40"> 사용한 공간 </Text>
