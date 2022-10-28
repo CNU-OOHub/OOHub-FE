@@ -92,7 +92,7 @@ export const useWorkspaceUsage = () => {
 
 export const getWorkspaceUsage = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {headers: {Authorization: "Bearer {}",}});
+    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {headers: {Authorization: "Bearer "+sessionStorage.getItem("accessToken")}});
     return data;
   } catch (err) {
     throw new Error("fetch worksapce usage error");
