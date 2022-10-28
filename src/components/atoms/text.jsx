@@ -2,10 +2,11 @@ import React from "react";
 
 const Text = ({
   children,
-  fontSize = 1.2,
+  fontSize = 1.1,
   fontWeight = "normal",
   color = "black",
   marginTop = "0vh",
+  marginBottom = "0vh",
   marginLeft = "0vh",
   onClick,
 }) => {
@@ -29,6 +30,7 @@ const Text = ({
         fontWeight: fontWeight,
         color: color,
         marginTop: marginTop,
+        marginBottom: marginBottom,
         marginLeft: marginLeft,
         fontFamily: "inter",
       }}

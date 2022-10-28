@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo_small.png";
 
 const Img = styled.img`
-  width: 6rem;
+  height: 6vh;
 `;
 
 const Logo = () => {
