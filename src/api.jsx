@@ -346,19 +346,15 @@ export const deleteSharedFile = async (organizationName, fileName) => {
   }
 };
 
-// 파일로 실행
-export const runFile = async (userInfo) => {
+
+// 파일로 실행 
+export const runFile = async (contents) => {
   try {
-    var formData = new FormData();
-    var imagefile = document.querySelector("#file"); // 수정 필요 -> 실제 파일로
-    formData.append("file", imagefile);
-    const response = await axios.post(`${SERVER}/run/file`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axios.post(`${SERVER}/api/run/file`, contents);
     if (response.status === 200) {
-      // TODO()
+      console.log("실행 완료");
+      console.log(response);
+      return response.data;
     }
   } catch (error) {
     throw new Error("execute error");
@@ -368,7 +364,7 @@ export const runFile = async (userInfo) => {
 // 코드 한줄 실행
 export const runLine = async (commandInfo) => {
   try {
-    const response = await axios.post(`${SERVER}/run/line`, commandInfo);
+    const response = await axios.post(`${SERVER}/api/run/line`, commandInfo);
     if (response.status === 200) {
       // TODO()
     }

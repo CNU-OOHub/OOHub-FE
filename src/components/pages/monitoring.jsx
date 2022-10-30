@@ -2,7 +2,6 @@ import styled from "styled-components";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import { useGetResources , useWorkspaceUsage } from "../../api";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminPageState } from "../../atom";
 import {
@@ -69,7 +68,7 @@ const Monitoring = () => {
       </div>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
       <Text fontSize='1.7'> RAM </Text>
-      <Frame><Mdiv width={resources.data.usedRamUsage}> </Mdiv></Frame>
+      <Frame><Mdiv width={resources.data.totalRamUsage*1000/resources.data.usedRamUsage }> </Mdiv></Frame>
       <Text fontSize='1.7'> {resources.data.usedRamUsage } Mib </Text>
       </div>
       <div style={{ textAlign: 'center',justifyContent: 'space-between', paddingTop: 20 }}>
