@@ -1,21 +1,41 @@
 import React from "react";
 import styled from "styled-components";
+import theme from "../../styles/theme";
 
 const DropDownBox = styled.select`
-  width: 100%;
+  width: ${(props) => `${props.width}%`};
   height: ${(props) => `${props.height}rem`};
+  background-color: ${(props) => props.backgroundColor};
+  color: ${(props) => props.color};
+  font-size: ${(props) => `${props.fontSize}rem`};
 `;
 
-const DropDown = ({ options, onChange, placeholder, height = 3 }) => {
+const DropDown = ({
+  options,
+  onChange,
+  placeholder,
+  height = 3,
+  width = 100,
+  backgroundColor = "white",
+  color = "black",
+  fontSize = 1.1,
+}) => {
   return (
-    <DropDownBox onChange={onChange} height={height}>
-      <option value={placeholder} hidden color="grey">
+    <DropDownBox
+      onChange={onChange}
+      height={height}
+      width={width}
+      backgroundColor={backgroundColor}
+      color={color}
+      fontSize={fontSize}
+    >
+      <option value={placeholder} hidden color={color}>
         {placeholder}
       </option>
 
       {options.map((value) => {
         return (
-          <option color="black" key={value}>
+          <option color={color} key={value}>
             {value}
           </option>
         );

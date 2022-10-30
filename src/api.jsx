@@ -30,7 +30,9 @@ export const authUser = async (userInfo) => {
       alert("로그인 되었습니다");
     }
   } catch (error) {
-    console.log(error);
+    if (error.response.status === 404) {
+      alert("존재하지 않는 id입니다");
+    }
     throw new Error("sign in user error");
   }
 };
