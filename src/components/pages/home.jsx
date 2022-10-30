@@ -20,14 +20,7 @@ import DropDown from "../atoms/dropdown";
 import Switch from "react-switch";
 import Input from "../atoms/input";
 import { VscRunAll } from "react-icons/vsc";
-
-const SideMenuStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 5rem;
-  height: 92vh;
-  background-color: ${theme.greyColor};
-`;
+import SideMenu from "../molecules/sideMenu";
 
 const FileList = styled.div`
   display: flex;
@@ -70,14 +63,13 @@ const FileContainer = styled.div`
   background-color: ${theme.blackGreyColor};
   // padding-top:1rem;
   // padding-left:1rem;
-
 `;
 
 const FileContent = styled.textarea`
-font-size : 1.2rem;
+  font-size: 1.2rem;
   color: white;
-  width: 100%; 
-  height: 100%; 
+  width: 100%;
+  height: 100%;
   background-color: ${theme.fileContainerColor};
 `;
 
@@ -101,7 +93,7 @@ const TerminalHeader = styled.div`
 const Home = () => {
   const [login, setLogin] = useRecoilState(loginState);
   const [admin, setAdmin] = useRecoilState(adminState);
-  const [sideMenu, setSideMenu] = useState(FOLDER);
+
   const [fileShare, setFileShare] = useRecoilState(fileShareState);
   const [openedFile, setOpenedFile] = useState("파일명");
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
@@ -116,10 +108,6 @@ const Home = () => {
     // }
   });
 
-  const sideMenuClicked = (clickedValue) => {
-    setSideMenu(clickedValue);
-  };
-
   const terminalClicked = (clickedValue) => {
     setTerminalOpened(clickedValue);
   };
@@ -129,50 +117,7 @@ const Home = () => {
   return (
     <Body backgroundColor={theme.darkGreyColor}>
       <FlexRow>
-        <SideMenuStyle>
-          <Button
-            bgColor={theme.greyColor}
-            onClick={() => sideMenuClicked(FOLDER)}
-          >
-            <AiOutlineFolderOpen
-              style={{
-                marginTop: "1rem",
-                width: "100%",
-                borderLeft: sideMenu === FOLDER ? "5px solid white" : "none",
-              }}
-              size={35}
-              color={sideMenu === FOLDER ? "white" : theme.lightGreyColor}
-            />
-          </Button>
-          <Button
-            bgColor={theme.greyColor}
-            onClick={() => sideMenuClicked(SETTING)}
-          >
-            <AiOutlineSetting
-              style={{
-                marginTop: "1rem",
-                width: "100%",
-                borderLeft: sideMenu === SETTING ? "5px solid white" : "none",
-              }}
-              size={35}
-              color={sideMenu === SETTING ? "white" : theme.lightGreyColor}
-            />
-          </Button>
-          <Button
-            bgColor={theme.greyColor}
-            onClick={() => sideMenuClicked(GROUPS)}
-          >
-            <RiGroup2Line
-              style={{
-                marginTop: "1rem",
-                width: "100%",
-                borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
-              }}
-              size={35}
-              color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
-            />
-          </Button>
-        </SideMenuStyle>
+        <SideMenu />
         <FileList>
           <div
             className="SearchArea"
@@ -202,7 +147,7 @@ const Home = () => {
                 {openedFile}
               </Text>
               <IoIosClose size={20} color={theme.textGreyColor} />
-              <VscRunAll IoIosClose size="20" color="green"/>
+              <VscRunAll IoIosClose size="20" color="green" />
             </FlexRow>
             <div style={{ width: "6rem" }}>
               <DropDown
@@ -236,9 +181,7 @@ const Home = () => {
             </FlexRow>
           </FileHeader>
           <FileContainer>
-          <FileContent name="inputstr2"></FileContent>
-
-
+            <FileContent name="inputstr2"></FileContent>
           </FileContainer>
           <Terminal>
             <TerminalHeader>
