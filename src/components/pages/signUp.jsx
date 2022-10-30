@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { addUser } from "../../api";
+import { addUser, addWorkspace, useGetAllDepartments } from "../../api";
 import logo from "../../assets/images/logo.png";
 import Button from "../atoms/button";
 import DropDown from "../atoms/dropdown";
@@ -26,7 +26,7 @@ const Logo = styled.img`
 const SignUp = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const departments = ["frontend", "backend", "test", "devops"];
+  // const departments = ["frontend", "backend", "test", "devops"];
   const [userInfo, setUserInfo] = useState({
     username: "",
     password: "",
@@ -35,6 +35,7 @@ const SignUp = () => {
   });
 
   const setLogin = useSetRecoilState(loginState);
+  const { data: departmentList } = useGetAllDepartments();
 
   React.useEffect(() => {
     setLogin(false);
@@ -54,10 +55,19 @@ const SignUp = () => {
 
   const addUserMutation = useMutation((userInfo) => addUser(userInfo), {
     onSuccess: () => {
-      navigate("/login");
-      queryClient.invalidateQueries();
+      createWorkspaceMutation.mutate(userInfo.username);
     },
   });
+
+  const createWorkspaceMutation = useMutation(
+    (username) => addWorkspace({ username: username }),
+    {
+      onSuccess: () => {
+        navigate("/login");
+        queryClient.invalidateQueries();
+      },
+    }
+  );
 
   const SignUpButtonClicked = () => {
     if (hasBlank()) {
@@ -86,7 +96,7 @@ const SignUp = () => {
         />
         <DropDown
           placeholder="department"
-          options={departments}
+          options={(departmentList || []).map((d) => d.name)}
           onChange={(e) => {
             changeUserInfo("departmentName", e.target.value);
           }}

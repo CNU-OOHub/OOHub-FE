@@ -76,7 +76,7 @@ export const addWorkspace = async (workspaceInfo) => {
       workspaceInfo
     );
     if (response.status === 200) {
-      alert("workspace가 생성되었습니다.");
+      alert(response.data);
     }
   } catch (error) {
     console.log(error);
@@ -86,15 +86,19 @@ export const addWorkspace = async (workspaceInfo) => {
 
 // workspace 사용량 조회
 export const useWorkspaceUsage = () => {
-  return useQuery(['usage'], () => getWorkspaceUsage(),{
+  return useQuery(["usage"], () => getWorkspaceUsage(), {
     staleTime: 5000,
-    cacheTime: Infinity
-  })
-}
+    cacheTime: Infinity,
+  });
+};
 
 export const getWorkspaceUsage = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {headers: {Authorization: "Bearer "+sessionStorage.getItem("accessToken")}});
+    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    });
     return data;
   } catch (err) {
     throw new Error("fetch worksapce usage error");
@@ -110,6 +114,13 @@ export const getAllDepartments = async () => {
   } catch (err) {
     throw new Error("fetch department error");
   }
+};
+
+export const useGetAllDepartments = () => {
+  return useQuery(["departmentList"], () => getAllDepartments(), {
+    staleTime: 5000,
+    cacheTime: Infinity,
+  });
 };
 
 // 부서 추가
@@ -252,7 +263,6 @@ export const useGetOrganizationMemberList = (organizationName) => {
       initialData: [],
     }
   );
-
 };
 
 //////////////////////공유 파일/////////////////////////
@@ -316,17 +326,16 @@ export const deleteSharedFile = async (organizationName, fileName) => {
   }
 };
 
-
-// 파일로 실행 
+// 파일로 실행
 export const runFile = async (userInfo) => {
   try {
     var formData = new FormData();
-    var imagefile = document.querySelector('#file'); // 수정 필요 -> 실제 파일로 
-    formData.append("file",imagefile)
+    var imagefile = document.querySelector("#file"); // 수정 필요 -> 실제 파일로
+    formData.append("file", imagefile);
     const response = await axios.post(`${SERVER}/run/file`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     if (response.status === 200) {
       // TODO()
@@ -336,7 +345,7 @@ export const runFile = async (userInfo) => {
   }
 };
 
-// 코드 한줄 실행 
+// 코드 한줄 실행
 export const runLine = async (commandInfo) => {
   try {
     const response = await axios.post(`${SERVER}/run/line`, commandInfo);
@@ -348,41 +357,41 @@ export const runLine = async (commandInfo) => {
   }
 };
 
-// 파일 조회 
+// 파일 조회
 export const useGetFile = () => {
-  return useQuery(['file'], () => getFile(),{
+  return useQuery(["file"], () => getFile(), {
     staleTime: 5000,
-    cacheTime: Infinity
-  })
-}
+    cacheTime: Infinity,
+  });
+};
 
 export const getFile = async () => {
   try {
-      const response = await axios.get(`${SERVER}/api/v1/files`, {});
-      return response;
+    const response = await axios.get(`${SERVER}/api/v1/files`, {});
+    return response;
   } catch (err) {
-      throw new Error('read file error');
+    throw new Error("read file error");
   }
 };
 
-// 파일 전체 조회 
+// 파일 전체 조회
 export const useGetFiles = () => {
-  return useQuery(['files'], () => getAllFile(),{
+  return useQuery(["files"], () => getAllFile(), {
     staleTime: 5000,
-    cacheTime: Infinity
-  })
-}
+    cacheTime: Infinity,
+  });
+};
 
 export const getAllFile = async () => {
   try {
-      const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
-      return response;
+    const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
+    return response;
   } catch (err) {
-      throw new Error('read all file error');
+    throw new Error("read all file error");
   }
 };
 
-// 파일 저장 
+// 파일 저장
 export const addFile = async (fileInfo) => {
   try {
     const response = await axios.post(`${SERVER}/api/v1/files`, fileInfo);
@@ -394,21 +403,22 @@ export const addFile = async (fileInfo) => {
   }
 };
 
-// resource monitoring 
+// resource monitoring
 export const useGetResources = () => {
-  return useQuery(['resources'], () => getAllResource(),{
+  return useQuery(["resources"], () => getAllResource(), {
     staleTime: 5000,
-    cacheTime: Infinity
-  })
-}
+    cacheTime: Infinity,
+  });
+};
 
 export const getAllResource = async () => {
   try {
-      const response = await axios.get(`${SERVER}/api/v1/monitoring/resources`, {});
-      return response;
+    const response = await axios.get(
+      `${SERVER}/api/v1/monitoring/resources`,
+      {}
+    );
+    return response;
   } catch (err) {
-      throw new Error('read all file error');
+    throw new Error("read all file error");
   }
 };
-
-
