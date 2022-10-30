@@ -10,6 +10,7 @@ import {
 } from "../../constants";
 import theme from "../../styles/theme";
 import Text from "../atoms/text";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -38,8 +39,16 @@ const TableData = styled.td`
   vertical-align: middle;
 `;
 
+
+
 const AdminCategoryModal = () => {
   const [adminPage, setAdminPage] = useRecoilState(adminPageState);
+  let navigate = useNavigate(); 
+
+  const routeChange = () =>{ 
+    navigate(`/monitoring`);
+  }
+
   return ReactDOM.createPortal(
     <Container>
       <Table>
@@ -86,6 +95,7 @@ const AdminCategoryModal = () => {
                     pageName: RESOURCE_MONITORING,
                     visible: true,
                   });
+                  routeChange()
                 }}
               >
                 Resource Monitoring
