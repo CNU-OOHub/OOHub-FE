@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { adminPageState } from "../../atom";
+import { adminCategoryModalVisibleState, adminPageState } from "../../atom";
 import {
   AUTHORIZATION_AREA,
   CHANGE_PASSWORD,
@@ -49,6 +49,14 @@ const AdminCategoryModal = () => {
     navigate(`/monitoring`);
   }
 
+  const setAdminCategoryModal = useSetRecoilState(
+    adminCategoryModalVisibleState
+  );
+
+  const modalClose = () => {
+    setAdminCategoryModal(false);
+  };
+
   return ReactDOM.createPortal(
     <Container>
       <Table>
@@ -63,6 +71,7 @@ const AdminCategoryModal = () => {
                     pageName: AUTHORIZATION_AREA,
                     visible: true,
                   });
+                  modalClose();
                 }}
               >
                 Authorization Area
@@ -79,6 +88,7 @@ const AdminCategoryModal = () => {
                     pageName: CHANGE_PASSWORD,
                     visible: true,
                   });
+                  modalClose();
                 }}
               >
                 Change Password
@@ -95,6 +105,7 @@ const AdminCategoryModal = () => {
                     pageName: RESOURCE_MONITORING,
                     visible: true,
                   });
+                  modalClose();
                   routeChange()
                 }}
               >
