@@ -9,8 +9,9 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
+import { RiGroup2Line } from "react-icons/ri";
 import Button from "../atoms/button";
-import { CONSOLE, FOLDER, SETTING, TERMINAL } from "../../constants";
+import { CONSOLE, FOLDER, GROUPS, SETTING, TERMINAL } from "../../constants";
 import styled from "styled-components";
 import FlexColumn from "../molecules/flexColumn";
 import FlexRow from "../molecules/flexRow";
@@ -97,9 +98,10 @@ const Home = () => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
     }
-    if (localStorage.getItem("isAdmin")) {
-      setAdmin(true);
-    }
+
+    // if (localStorage.getItem("isAdmin") === "true") {
+    //   setAdmin(true);
+    // }
   });
 
   const sideMenuClicked = (clickedValue) => {
@@ -142,6 +144,20 @@ const Home = () => {
               }}
               size={35}
               color={sideMenu === SETTING ? "white" : theme.lightGreyColor}
+            />
+          </Button>
+          <Button
+            bgColor={theme.greyColor}
+            onClick={() => sideMenuClicked(GROUPS)}
+          >
+            <RiGroup2Line
+              style={{
+                marginTop: "1rem",
+                width: "100%",
+                borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
+              }}
+              size={35}
+              color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
             />
           </Button>
         </SideMenuStyle>
@@ -191,10 +207,9 @@ const Home = () => {
               </Text>
               <Switch
                 onChange={(e) => {
-                  console.log(e);
                   setFileShare((prev) => ({
                     ...prev,
-                    available: !fileShare.available,
+                    available: e,
                   }));
                 }}
                 checked={fileShare.available}
@@ -221,6 +236,7 @@ const Home = () => {
                 fontWeight={400}
                 onClick={() => {
                   terminalClicked(CONSOLE);
+                  console.log(fileShare.available);
                 }}
                 {...(terminalOpened === CONSOLE && {
                   borderBottom: "1px solid white",

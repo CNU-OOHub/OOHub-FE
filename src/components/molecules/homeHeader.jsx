@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { adminCategoryModalVisibleState, adminState } from "../../atom";
@@ -34,7 +35,6 @@ const HomeHeader = () => {
         <Text />
         <Text />
         <Text color={theme.textGreyColor}>부서명</Text>
-        <Text color={theme.textGreyColor}>Groups</Text>
         {admin && (
           <Text color={theme.textGreyColor} onClick={onClickAdminButton}>
             Admin
