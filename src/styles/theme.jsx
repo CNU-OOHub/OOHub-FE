@@ -6,6 +6,7 @@ const theme = {
   greyColor: "#565656",
   darkGreyColor: "#333333",
   blackGreyColor: "#252525",
+  fileContainerColor: "#373737"
 };
 
 export default theme;
