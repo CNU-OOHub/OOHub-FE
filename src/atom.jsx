@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { FOLDER } from "./constants";
 
 export const loginState = atom({ key: "login", default: false });
 
@@ -20,4 +21,9 @@ export const fileShareState = atom({
     available: false,
     fileName: "",
   },
+});
+
+export const sideMenuState = atom({
+  key: "sideMenu",
+  default: FOLDER,
 });

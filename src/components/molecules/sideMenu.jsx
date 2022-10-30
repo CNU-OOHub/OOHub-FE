@@ -6,6 +6,8 @@ import { FOLDER, GROUPS, SETTING } from "../../constants";
 import Button from "../atoms/button";
 import { AiOutlineFolderOpen, AiOutlineSetting } from "react-icons/ai";
 import { RiGroup2Line } from "react-icons/ri";
+import { useRecoilState } from "recoil";
+import { sideMenuState } from "../../atom";
 
 const SideMenuStyle = styled.div`
   display: flex;
@@ -16,7 +18,7 @@ const SideMenuStyle = styled.div`
 `;
 
 const SideMenu = () => {
-  const [sideMenu, setSideMenu] = useState(FOLDER);
+  const [sideMenu, setSideMenu] = useRecoilState(sideMenuState);
   const sideMenuClicked = (clickedValue) => {
     setSideMenu(clickedValue);
   };
