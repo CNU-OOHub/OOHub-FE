@@ -30,10 +30,15 @@ const Monitoring = () => {
   console.log("workspaceUsage:"+JSON.stringify(workspaceUsage));
 
   
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    navigate(-1);
+  }
+
   return (
     (typeof resources !== "undefined")&& (typeof workspaceUsage !== "undefined") ? (<div style={{ height: "92vh" }}>
-    <div style={{ paddingTop: 50, paddingLeft:50}}>
-    <Text fontSize='2' fontWeight='bold'> {'>'} Resource Monitoring For admin</Text>
+    <div style={{ paddingTop: 50, paddingLeft:50, cursor:"pointer"}} onClick={routeChange}>
+    <Text fontSize='2' fontWeight='bold'> {'<'} Resource Monitoring For admin</Text>
     </div>
     <div style={{marginLeft:"5vh", width: '100%'}}>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex', justifyItems: 'centers'}}>
