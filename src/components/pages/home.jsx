@@ -97,9 +97,10 @@ const Home = () => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
     }
-    if (localStorage.getItem("isAdmin")) {
-      setAdmin(true);
-    }
+
+    // if (localStorage.getItem("isAdmin") === "true") {
+    //   setAdmin(true);
+    // }
   });
 
   const sideMenuClicked = (clickedValue) => {
@@ -191,10 +192,9 @@ const Home = () => {
               </Text>
               <Switch
                 onChange={(e) => {
-                  console.log(e);
                   setFileShare((prev) => ({
                     ...prev,
-                    available: !fileShare.available,
+                    available: e,
                   }));
                 }}
                 checked={fileShare.available}
@@ -221,6 +221,7 @@ const Home = () => {
                 fontWeight={400}
                 onClick={() => {
                   terminalClicked(CONSOLE);
+                  console.log(fileShare.available);
                 }}
                 {...(terminalOpened === CONSOLE && {
                   borderBottom: "1px solid white",

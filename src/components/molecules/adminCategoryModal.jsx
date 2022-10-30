@@ -21,7 +21,7 @@ const Container = styled.div`
   top: 8.15vh;
   background-color: ${theme.greyColor};
   border: 1px solid grey;
-  z-index: 10000;
+  // z-index: 10000;
 `;
 
 const Table = styled.table`

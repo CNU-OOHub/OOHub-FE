@@ -19,7 +19,7 @@ const Logo = styled.img`
 `;
 
 const LogIn = () => {
-  const setAdmin = useSetRecoilState(adminState);
+  const [admin, setAdmin] = useRecoilState(adminState);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [userInfo, setUserInfo] = useState({
@@ -47,7 +47,9 @@ const LogIn = () => {
   const authUserMutation = useMutation((userInfo) => authUser(userInfo), {
     onSuccess: () => {
       queryClient.invalidateQueries();
-      setAdmin(localStorage.getItem("isAdmin"));
+      if (localStorage.getItem("isAdmin") === "true") {
+        setAdmin(true);
+      }
       navigate("/home");
     },
   });

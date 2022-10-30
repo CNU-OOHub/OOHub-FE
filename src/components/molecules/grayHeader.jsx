@@ -5,7 +5,7 @@ import logo from "../../assets/images/logo.png";
 
 const Head = styled.div`
   width: 100%;
-  height: 10vh;
+  height: 8vh;
   background-color: ${theme.textGreyColor};
   vertical-align: middle;
   padding: 15px;
