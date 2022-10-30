@@ -1,9 +1,14 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import { useGetResources , useWorkspaceUsage } from "../../api";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { adminPageState } from "../../atom";
+import {
+  RESOURCE_MONITORING,
+} from "../../constants";
+
+import { useRecoilState } from "recoil";
 
 const Frame = styled.div`
   width: 960px;
@@ -35,9 +40,18 @@ const Monitoring = () => {
     navigate(-1);
   }
 
+  const [adminPage, setAdminPage] = useRecoilState(adminPageState);
+
+
   return (
     (typeof resources !== "undefined")&& (typeof workspaceUsage !== "undefined") ? (<div style={{ height: "92vh" }}>
-    <div style={{ paddingTop: 50, paddingLeft:50, cursor:"pointer"}} onClick={routeChange}>
+    <div style={{ paddingTop: 50, paddingLeft:50, cursor:"pointer"}} onClick={() => {
+                  setAdminPage({
+                    pageName: RESOURCE_MONITORING,
+                    visible: false,
+                  });
+                  routeChange()
+                }}>           
     <Text fontSize='2' fontWeight='bold'> {'<'} Resource Monitoring For admin</Text>
     </div>
     <div style={{marginLeft:"5vh", width: '100%'}}>
