@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { adminState, loginState } from "../../atom";
+import React, { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { adminState, fileShareState, loginState } from "../../atom";
 import { FOLDER, GROUPS } from "../../constants";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
@@ -25,6 +25,83 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 
 import { sideMenuState } from "../../atom";
 
+const SideMenuStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 5rem;
+  height: 92vh;
+  background-color: ${theme.greyColor};
+`;
+
+const FileList = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  height: 92vh;
+  background-color: ${theme.darkGreyColor};
+  overflow: auto;
+  resize: horizontal;
+`;
+
+const File = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 92vh;
+  background-color: ${theme.blackGreyColor};
+  justify-content: space-around;
+`;
+
+const FileHeader = styled.div`
+  //flex-grow: 0.1;
+  // display: inline-block;
+  height: 4rem;
+  align-items: center;
+  flex-direction: row;
+  display: flex;
+  // display: flex;
+  //border: 0.5px solid grey;
+  /* box-shadow: 0.5px 0.5px 8px 2px black; */
+  background-color: #373737;
+`;
+
+const FileContainer = styled.div`
+  display: inline-block;
+  flex: 1;
+  // height: auto;
+  //height: 30rem;
+  //flex-grow: 10;
+  background-color: ${theme.blackGreyColor};
+  // padding-top:1rem;
+  // padding-left:1rem;
+
+`;
+
+const FileContent = styled.textarea`
+font-size : 1.2rem;
+  color: white;
+  width: 100%; 
+  height: 100%; 
+  background-color: ${theme.fileContainerColor};
+`;
+
+const Terminal = styled.div`
+  display: inline-block;
+  //flex-grow: 4;
+  //height: 100%;
+  height: 13rem;
+  background-color: ${theme.blackGreyColor};
+  border-top: 0.5px solid grey;
+  // display: flex;
+  // bottom: 0;
+  /* overflow: auto;
+  resize: inherit; */
+`;
+
+const TerminalHeader = styled.div`
+  margin-left: 1rem;
+`;
+
 const Home = () => {
   const [login, setLogin] = useRecoilState(loginState);
   const [admin, setAdmin] = useRecoilState(adminState);
@@ -40,6 +117,7 @@ const Home = () => {
   const [result, setResult] = useState([]);
   const sideMenu = useRecoilValue(sideMenuState);
 
+  
   useEffect(() => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
