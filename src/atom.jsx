@@ -1,8 +1,8 @@
 import { atom } from "recoil";
 
-export const loginState = atom({ key: "login", default: true });
+export const loginState = atom({ key: "login", default: false });
 
-export const adminState = atom({ key: "admin", default: false });
+export const adminState = atom({ key: "admin", default: true });
 
 export const adminCategoryModalVisibleState = atom({
   key: "adminCategoryModal",

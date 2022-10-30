@@ -6,6 +6,7 @@ const Text = ({
   fontWeight = "normal",
   color = "black",
   marginTop = "0vh",
+  marginRight = "0vh",
   marginBottom = "0vh",
   marginLeft = "0vh",
   onClick,
@@ -33,6 +34,7 @@ const Text = ({
         marginBottom: marginBottom,
         marginLeft: marginLeft,
         fontFamily: "inter",
+        marginRight: marginRight,
       }}
     >
       {children}

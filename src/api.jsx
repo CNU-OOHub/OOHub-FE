@@ -181,8 +181,25 @@ export const addUserInOrganization = async (organizationName, userInfo) => {
       alert("organization에 사용자가 추가되었습니다");
     }
   } catch (error) {
-    console.log(error);
+    if (error.response.data.status === 409) {
+      alert("해당 사용자는 이미 그룹에 있습니다.");
+    }
     throw new Error("Add user in organization error");
+  }
+};
+
+// organization에서 사용자 삭제
+export const deleteOrganizationMember = async (organizationName, username) => {
+  try {
+    const response = await axios.delete(
+      `${SERVER}/api/v1/organization/${organizationName}/${username}`
+    );
+    if (response.status === 200) {
+      alert("해당 사용자가 그룹에서 제외되었습니다");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("delete organization error");
   }
 };
 
@@ -200,10 +217,42 @@ export const getAllOrganization = async (username) => {
 };
 
 export const useGetAllOrganizations = (username) => {
-  return useQuery(["organizations"], () => getAllOrganization(username), {
-    staleTime: 5000,
-    cacheTime: Infinity,
-  });
+  return useQuery(
+    ["organizationList", username],
+    () => getAllOrganization(username),
+    {
+      staleTime: 5000,
+      cacheTime: Infinity,
+    }
+  );
+};
+
+// 그룹의 사용자 목록 조회
+export const getOrganizationMemberList = async (organizationName) => {
+  try {
+    const { data } = await axios.get(
+      `${SERVER}/api/v1/organization/${organizationName}`,
+      {}
+    );
+    return data;
+  } catch (err) {
+    throw new Error("fetch all organization error");
+  }
+};
+
+export const useGetOrganizationMemberList = (organizationName) => {
+  return useQuery(
+    ["memberList", organizationName],
+    () => getOrganizationMemberList(organizationName),
+    {
+      enabled: false,
+      staleTime: 5000,
+      cacheTime: Infinity,
+      refetchOnWindowFocus: false,
+      initialData: [],
+    }
+  );
+
 };
 
 //////////////////////공유 파일/////////////////////////
@@ -266,6 +315,7 @@ export const deleteSharedFile = async (organizationName, fileName) => {
     throw new Error("delete shared file error");
   }
 };
+
 
 // 파일로 실행 
 export const runFile = async (userInfo) => {
@@ -360,4 +410,5 @@ export const getAllResource = async () => {
       throw new Error('read all file error');
   }
 };
+
 

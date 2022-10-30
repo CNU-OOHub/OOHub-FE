@@ -6,6 +6,7 @@ import AdminCategoryModal from "./components/molecules/adminCategoryModal";
 import Header from "./components/organisms/header";
 import Home from "./components/pages/home";
 import LogIn from "./components/pages/logIn";
+import Organization from "./components/pages/organization";
 import SignUp from "./components/pages/signUp";
 import Monitoring from "./components/pages/monitoring";
 
@@ -22,6 +23,7 @@ const Router = () => {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/organization" element={<Organization/>}/>
         <Route path="/monitoring" element={<Monitoring />} />
       </Routes>
     </BrowserRouter>

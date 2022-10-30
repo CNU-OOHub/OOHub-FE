@@ -13,6 +13,8 @@ const CustomButton = styled.button`
   background-color: ${(props) => props.bgColor};
   font-size: ${(props) => `${props.fontSize}rem`};
   font-weight: ${(props) => props.fontWeight};
+  //border: ${(props) => props.border};
+  margin-top: ${(props) => `${props.marginTop}rem`};
   ${(props) =>
     props.hoverEvent &&
     css`
@@ -37,6 +39,7 @@ const Button = ({
   fontWeight = 700,
   border = "none",
   hoverEvent = false,
+  marginTop = "0",
   borderBottom,
 }) => {
   return (
@@ -52,6 +55,7 @@ const Button = ({
       fontWeight={fontWeight}
       border={border}
       hoverEvent={hoverEvent}
+      marginTop={marginTop}
       borderBottom={borderBottom}
       type="button"
     >
