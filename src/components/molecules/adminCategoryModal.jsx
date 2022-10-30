@@ -1,6 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { adminPageState } from "../../atom";
+import {
+  AUTHORIZATION_AREA,
+  CHANGE_PASSWORD,
+  RESOURCE_MONITORING,
+} from "../../constants";
 import theme from "../../styles/theme";
 import Text from "../atoms/text";
 
@@ -32,6 +39,7 @@ const TableData = styled.td`
 `;
 
 const AdminCategoryModal = () => {
+  const [adminPage, setAdminPage] = useRecoilState(adminPageState);
   return ReactDOM.createPortal(
     <Container>
       <Table>
@@ -42,7 +50,10 @@ const AdminCategoryModal = () => {
                 color={theme.textGreyColor}
                 fontSize={1.0}
                 onClick={() => {
-                  console.log("authorization area");
+                  setAdminPage({
+                    pageName: AUTHORIZATION_AREA,
+                    visible: true,
+                  });
                 }}
               >
                 Authorization Area
@@ -55,7 +66,10 @@ const AdminCategoryModal = () => {
                 color={theme.textGreyColor}
                 fontSize={1.0}
                 onClick={() => {
-                  console.log("Change Password");
+                  setAdminPage({
+                    pageName: CHANGE_PASSWORD,
+                    visible: true,
+                  });
                 }}
               >
                 Change Password
@@ -68,7 +82,10 @@ const AdminCategoryModal = () => {
                 color={theme.textGreyColor}
                 fontSize={1.0}
                 onClick={() => {
-                  console.log("Resource Monitoring");
+                  setAdminPage({
+                    pageName: RESOURCE_MONITORING,
+                    visible: true,
+                  });
                 }}
               >
                 Resource Monitoring

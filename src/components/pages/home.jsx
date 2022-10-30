@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { fileShareState, loginState } from "../../atom";
+import { adminState, fileShareState, loginState } from "../../atom";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
 import {
@@ -87,6 +87,7 @@ const TerminalHeader = styled.div`
 
 const Home = () => {
   const [login, setLogin] = useRecoilState(loginState);
+  const [admin, setAdmin] = useRecoilState(adminState);
   const [sideMenu, setSideMenu] = useState(FOLDER);
   const [fileShare, setFileShare] = useRecoilState(fileShareState);
   const [openedFile, setOpenedFile] = useState("파일명");
@@ -95,6 +96,9 @@ const Home = () => {
   useEffect(() => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
+    }
+    if (localStorage.getItem("isAdmin")) {
+      setAdmin(true);
     }
   });
 

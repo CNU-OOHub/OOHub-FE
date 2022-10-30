@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { adminCategoryModalVisibleState } from "../../atom";
+import { adminCategoryModalVisibleState, adminState } from "../../atom";
 import theme from "../../styles/theme";
 import Logo from "../atoms/logo";
 import Text from "../atoms/text";
@@ -10,6 +10,7 @@ import FlexRow from "./flexRow";
 const HomeHeader = () => {
   const [adminCategoryModalVisible, setAdminCategoryModalVisible] =
     useRecoilState(adminCategoryModalVisibleState);
+  const [admin, setAdmin] = useRecoilState(adminState);
 
   const onClickAdminButton = () => {
     setAdminCategoryModalVisible(!adminCategoryModalVisible);
@@ -34,9 +35,11 @@ const HomeHeader = () => {
         <Text />
         <Text color={theme.textGreyColor}>부서명</Text>
         <Text color={theme.textGreyColor}>Groups</Text>
-        <Text color={theme.textGreyColor} onClick={onClickAdminButton}>
-          Admin
-        </Text>
+        {admin && (
+          <Text color={theme.textGreyColor} onClick={onClickAdminButton}>
+            Admin
+          </Text>
+        )}
       </FlexRow>
     </div>
   );

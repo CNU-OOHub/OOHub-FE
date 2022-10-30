@@ -11,7 +11,7 @@ import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { loginState } from "../../atom";
+import { adminState, loginState } from "../../atom";
 
 const Logo = styled.img`
   width: 20rem;
@@ -19,6 +19,7 @@ const Logo = styled.img`
 `;
 
 const LogIn = () => {
+  const setAdmin = useSetRecoilState(adminState);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [userInfo, setUserInfo] = useState({
@@ -46,6 +47,7 @@ const LogIn = () => {
   const authUserMutation = useMutation((userInfo) => authUser(userInfo), {
     onSuccess: () => {
       queryClient.invalidateQueries();
+      setAdmin(localStorage.getItem("isAdmin"));
       navigate("/home");
     },
   });
