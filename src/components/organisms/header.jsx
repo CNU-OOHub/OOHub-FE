@@ -1,10 +1,10 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { adminState, loginState } from "../../atom";
+import { adminPageState, adminState, loginState } from "../../atom";
 import theme from "../../styles/theme";
 import HomeHeader from "../molecules/homeHeader";
-import GrayHeader from "./grayHeader";
+import GrayHeader from "../molecules/grayHeader";
 
 const AuthHead = styled.div`
   width: 100%;
@@ -14,11 +14,16 @@ const AuthHead = styled.div`
 
 const Header = () => {
   const login = useRecoilValue(loginState);
-  const admin = useRecoilValue(adminState);
-  return login ? (admin ? (<GrayHeader/>):(  <HomeHeader />)) : (
-      <AuthHead />
+  const adminPage = useRecoilValue(adminPageState);
+  return login ? (
+    adminPage.visible ? (
+      <GrayHeader />
+    ) : (
+      <HomeHeader />
+    )
+  ) : (
+    <AuthHead />
   );
-  
 };
 
 export default Header;

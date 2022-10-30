@@ -12,12 +12,11 @@ const Head = styled.div`
 `;
 
 const GrayHeader = () => {
-    return <Head>
-      <div>
-        <img alt="logo" src={logo} width='100' />      
-      </div>
-
-      </Head>;
+  return (
+    <Head>
+      <img alt="logo" src={logo} width="100" />
+    </Head>
+  );
 };
 
 export default GrayHeader;

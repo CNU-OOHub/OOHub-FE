@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
+import { useSetRecoilState } from "recoil";
+import { loginState } from "../../atom";
 
 const Logo = styled.img`
   width: 20rem;
@@ -30,6 +32,12 @@ const SignUp = () => {
     password: "",
     departmentName: "",
     workspaceName: "",
+  });
+
+  const setLogin = useSetRecoilState(loginState);
+
+  React.useEffect(() => {
+    setLogin(false);
   });
 
   const changeUserInfo = (name, value) => {

@@ -11,7 +11,7 @@ export const adminCategoryModalVisibleState = atom({
 
 export const adminPageState = atom({
   key: "adminPage",
-  default: "Authorization Area",
+  default: { pageName: "Authorization Area", visible: false },
 });
 
 export const fileShareState = atom({

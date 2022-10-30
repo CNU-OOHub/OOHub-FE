@@ -18,7 +18,7 @@ const Router = () => {
       <Header />
       {adminCategoryModalVisible && <AdminCategoryModal />}
       <Routes>
-        <Route path="/" element={<SignUp />} />
+        <Route path="/" element={<LogIn />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/home" element={<Home />} />
