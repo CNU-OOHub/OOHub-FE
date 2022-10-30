@@ -24,6 +24,9 @@ export const authUser = async (userInfo) => {
     const response = await axios.post(`${SERVER}/api/v1/login`, userInfo);
     if (response.status === 200) {
       sessionStorage.setItem("accessToken", response.data.token);
+      localStorage.setItem("username", response.data.username);
+      localStorage.setItem("departmentName", response.data.departmentName);
+      localStorage.setItem("isAdmin", response.data.isAdmin);
       alert("로그인 되었습니다");
     }
   } catch (error) {
@@ -176,6 +179,21 @@ export const addUserInOrganization = async (organizationName, userInfo) => {
   }
 };
 
+// organization에서 사용자 삭제
+export const deleteOrganizationMember = async (organizationName, username) => {
+  try {
+    const response = await axios.delete(
+      `${SERVER}/api/v1/organization/${organizationName}/${username}`
+    );
+    if (response.status === 200) {
+      alert("해당 사용자가 그룹에서 제외되었습니다");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("delete organization error");
+  }
+};
+
 // 사용자별 organization 목록 조회
 export const getAllOrganization = async (username) => {
   try {
@@ -190,10 +208,14 @@ export const getAllOrganization = async (username) => {
 };
 
 export const useGetAllOrganizations = (username) => {
-  return useQuery(["organizationList"], () => getAllOrganization(username), {
-    staleTime: 5000,
-    cacheTime: Infinity,
-  });
+  return useQuery(
+    ["organizationList", username],
+    () => getAllOrganization(username),
+    {
+      staleTime: 5000,
+      cacheTime: Infinity,
+    }
+  );
 };
 
 // 그룹의 사용자 목록 조회
