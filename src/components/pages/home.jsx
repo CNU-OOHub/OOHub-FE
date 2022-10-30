@@ -19,6 +19,7 @@ import Text from "../atoms/text";
 import DropDown from "../atoms/dropdown";
 import Switch from "react-switch";
 import Input from "../atoms/input";
+import { VscRunAll } from "react-icons/vsc";
 
 const SideMenuStyle = styled.div`
   display: flex;
@@ -67,6 +68,17 @@ const FileContainer = styled.div`
   //height: 30rem;
   //flex-grow: 10;
   background-color: ${theme.blackGreyColor};
+  // padding-top:1rem;
+  // padding-left:1rem;
+
+`;
+
+const FileContent = styled.textarea`
+font-size : 1.2rem;
+  color: white;
+  width: 100%; 
+  height: 100%; 
+  background-color: ${theme.fileContainerColor};
 `;
 
 const Terminal = styled.div`
@@ -190,6 +202,7 @@ const Home = () => {
                 {openedFile}
               </Text>
               <IoIosClose size={20} color={theme.textGreyColor} />
+              <VscRunAll IoIosClose size="20" color="green"/>
             </FlexRow>
             <div style={{ width: "6rem" }}>
               <DropDown
@@ -222,7 +235,11 @@ const Home = () => {
               />
             </FlexRow>
           </FileHeader>
-          <FileContainer>d</FileContainer>
+          <FileContainer>
+          <FileContent name="inputstr2"></FileContent>
+
+
+          </FileContainer>
           <Terminal>
             <TerminalHeader>
               <Button
