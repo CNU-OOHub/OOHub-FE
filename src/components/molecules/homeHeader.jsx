@@ -35,7 +35,6 @@ const HomeHeader = () => {
         <Text />
         <Text />
         <Text color={theme.textGreyColor}>부서명</Text>
-        <Text color={theme.textGreyColor}>Groups</Text>
         {admin && (
           <Text color={theme.textGreyColor} onClick={onClickAdminButton}>
             Admin
