@@ -9,14 +9,20 @@ const Container = styled.div`
   margin-top: ${(props) => (props.needMargin ? "2rem" : 0)};
   margin-left: ${(props) => (props.needMargin ? "5%" : 0)};
   margin-right: ${(props) => (props.needMargin ? "5%" : 0)};
+  flex-grow: ${(props) => props.flexGrow};
 `;
 const FlexRow = ({
   children,
   needMargin = false,
   justifyContent = "space-between",
+  flexGrow = 0,
 }) => {
   return (
-    <Container needMargin={needMargin} justifyContent={justifyContent}>
+    <Container
+      needMargin={needMargin}
+      justifyContent={justifyContent}
+      flexGrow={flexGrow}
+    >
       {children}
     </Container>
   );

@@ -5,7 +5,10 @@ const Input = ({
   inputType,
   placeholder,
   height = 3.5,
+  width,
   onChange,
+  fontSize,
+  backgroundColor = "white",
 }) => {
   switch (type) {
     case "text":
@@ -14,7 +17,13 @@ const Input = ({
           type={inputType}
           placeholder={placeholder}
           onChange={onChange}
-          style={{ height: `${height}rem`, paddingLeft: "5px" }}
+          style={{
+            height: `${height}rem`,
+            paddingLeft: "5px",
+            width: `${width}%`,
+            backgroundColor: backgroundColor,
+            fontSize: fontSize,
+          }}
         />
       );
     default:

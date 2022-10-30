@@ -3,6 +3,8 @@ import styled, { css } from "styled-components";
 import theme from "../../styles/theme";
 
 const CustomButton = styled.button`
+  padding: ${(props) => `${props.padding}rem`};
+  margin-right: ${(props) => `${props.marginRight}rem`};
   text-align: center;
   vertical-align: center;
   width: ${(props) => `${props.width}%`};
@@ -12,7 +14,7 @@ const CustomButton = styled.button`
   font-size: ${(props) => `${props.fontSize}rem`};
   font-weight: ${(props) => props.fontWeight};
   //border: ${(props) => props.border};
-  margin-bottom: ${(props) => `${props.marginTop}rem`};
+  margin-top: ${(props) => `${props.marginTop}rem`};
   ${(props) =>
     props.hoverEvent &&
     css`
@@ -21,11 +23,14 @@ const CustomButton = styled.button`
         transition: 0.4s;
       }
     `}
+  border-bottom: ${(props) => props.borderBottom};
 `;
 
 const Button = ({
   children,
   onClick,
+  padding = 0,
+  marginRight = 0,
   width,
   height,
   bgColor = theme.primaryColor,
@@ -35,10 +40,13 @@ const Button = ({
   border = "none",
   hoverEvent = false,
   marginTop = "0",
+  borderBottom,
 }) => {
   return (
     <CustomButton
       onClick={onClick}
+      padding={padding}
+      marginRight={marginRight}
       width={width}
       height={height}
       bgColor={bgColor}
@@ -48,6 +56,7 @@ const Button = ({
       border={border}
       hoverEvent={hoverEvent}
       marginTop={marginTop}
+      borderBottom={borderBottom}
       type="button"
     >
       {children}
