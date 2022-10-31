@@ -235,7 +235,7 @@ export const deleteOrganizationMember = async (organizationName, username) => {
 };
 
 // 사용자별 organization 목록 조회
-export const getAllOrganization = async (username) => {
+export const getAllOrganizations = async (username) => {
   try {
     const { data } = await axios.get(
       `${SERVER}/api/v1/organization/${username}/all`,
@@ -245,6 +245,17 @@ export const getAllOrganization = async (username) => {
   } catch (err) {
     throw new Error("fetch all organization error");
   }
+};
+
+export const useGetAllOrganizations = (username) => {
+  return useQuery(
+    ["organizationList", username],
+    () => getAllOrganizations(username),
+    {
+      staleTime: 5000,
+      cacheTime: Infinity,
+    }
+  );
 };
 
 // 그룹의 사용자 목록 조회
