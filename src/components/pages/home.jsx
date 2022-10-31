@@ -7,7 +7,7 @@ import Body from "../atoms/body";
 import FlexRow from "../molecules/flexRow";
 import SideMenu from "../molecules/sideMenu";
 import FileView from "../organisms/fileView";
-// import OrganizationView from "../organisms/organizationView";
+import OrganizationView from "../organisms/organizationView";
 
 import { sideMenuState } from "../../atom";
 
@@ -30,7 +30,7 @@ const Home = () => {
       <FlexRow>
         <SideMenu />
         {sideMenu === FOLDER && <FileView />}
-        {/* {sideMenu === GROUPS && <OrganizationView />} */}
+        {sideMenu === GROUPS && <OrganizationView />}
       </FlexRow>
     </Body>
   );

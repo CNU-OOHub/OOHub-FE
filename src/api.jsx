@@ -32,6 +32,9 @@ export const authUser = async (userInfo) => {
     if (error.response.status === 404) {
       alert("존재하지 않는 id입니다");
     }
+    if (error.response.status === 403) {
+      alert("비밀번호가 일치하지 않습니다.");
+    }
     throw new Error("sign in user error");
   }
 };
@@ -140,17 +143,7 @@ export const addDepartment = async (departmentInfo) => {
 
 //////////////////////Organization/////////////////////////
 // organization 전체 목록 조회
-export const useGetAllOrganizations = (username) => {
-  return useQuery(
-    ["organizationList", username],
-    () => getAllOrganization(username),
-    {
-      staleTime: 5000,
-      cacheTime: Infinity,
-    }
-  );
-};
-export const getAllOrganizations = async () => {
+export const getAdminOrganizations = async () => {
   try {
     const { data } = await axios.get(`${SERVER}/api/v1/organization`, {});
     return data;
@@ -159,12 +152,24 @@ export const getAllOrganizations = async () => {
   }
 };
 
+export const useGetAdminOrganization = () => {
+  return useQuery(["adminOrganizationList"], () => getAdminOrganizations(), {
+    staleTime: 5000,
+    cacheTime: Infinity,
+  });
+};
+
 // organization 생성
 export const addOrganization = async (organizationInfo) => {
   try {
     const response = await axios.post(
       `${SERVER}/api/v1/organization`,
-      organizationInfo
+      organizationInfo,
+      {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+      }
     );
     if (response.status === 200) {
       alert("organization이 등록되었습니다");
@@ -185,6 +190,9 @@ export const deleteOrganization = async (organizationName) => {
       alert("organization이 삭제되었습니다");
     }
   } catch (error) {
+    if (error.response.data.status === 404) {
+      alert("해당 그룹이 존재하지 않습니다.");
+    }
     console.log(error);
     throw new Error("delete organization error");
   }
@@ -203,6 +211,9 @@ export const addUserInOrganization = async (organizationName, userInfo) => {
   } catch (error) {
     if (error.response.data.status === 409) {
       alert("해당 사용자는 이미 그룹에 있습니다.");
+    }
+    if (error.response.data.status === 404) {
+      alert("해당 사용자가 존재하지 않습니다.");
     }
     throw new Error("Add user in organization error");
   }
@@ -244,7 +255,10 @@ export const getOrganizationMemberList = async (organizationName) => {
       {}
     );
     return data;
-  } catch (err) {
+  } catch (error) {
+    if (error.response.data.status === 404) {
+      alert("해당 그룹이 존재하지 않습니다.");
+    }
     throw new Error("fetch all organization error");
   }
 };
@@ -254,11 +268,8 @@ export const useGetOrganizationMemberList = (organizationName) => {
     ["memberList", organizationName],
     () => getOrganizationMemberList(organizationName),
     {
-      enabled: false,
-      staleTime: 5000,
-      cacheTime: Infinity,
-      refetchOnWindowFocus: false,
       initialData: [],
+      staleTime: 5000,
     }
   );
 };
