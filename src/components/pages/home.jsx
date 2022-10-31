@@ -20,10 +20,9 @@ const Home = () => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
     }
-
-    // if (localStorage.getItem("isAdmin") === "true") {
-    //   setAdmin(true);
-    // }
+    if (localStorage.getItem("isAdmin") === "true") {
+      setAdmin(true);
+    }
   });
 
   return (

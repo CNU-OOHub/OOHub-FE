@@ -1,7 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { adminCategoryModalVisibleState, adminState } from "../../atom";
 import theme from "../../styles/theme";
 import Logo from "../atoms/logo";
@@ -34,7 +32,9 @@ const HomeHeader = () => {
         <Text color={theme.textGreyColor}>Help</Text>
         <Text />
         <Text />
-        <Text color={theme.textGreyColor}>부서명</Text>
+        <Text color={theme.primaryColor}>
+          {localStorage.getItem("departmentName")}
+        </Text>
         {admin && (
           <Text color={theme.textGreyColor} onClick={onClickAdminButton}>
             Admin

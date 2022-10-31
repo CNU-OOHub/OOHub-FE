@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { adminPageState, adminState, loginState } from "../../atom";
+import { adminPageState, loginState } from "../../atom";
 import theme from "../../styles/theme";
 import HomeHeader from "../molecules/homeHeader";
 import GrayHeader from "../molecules/grayHeader";
