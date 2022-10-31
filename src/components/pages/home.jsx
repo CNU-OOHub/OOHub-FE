@@ -347,8 +347,8 @@ const Home = () => {
             </TerminalHeader>
             {terminalOpened===TERMINAL? 
               <div style={{margin:"10px"}}>
-              <text style={{color:"white", float:"left" ,outline: "none"}}>{'>>>  '} </text>             
-              <input type={"text"} style={{backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}></input>
+              <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
+              <input type={"text"} style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}></input>
               </div>
             :
             <Scroll>
