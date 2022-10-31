@@ -83,6 +83,7 @@ font-size : 1.2rem;
   width: 100%; 
   height: 100%; 
   background-color: ${theme.fileContainerColor};
+  outline: none;
 `;
 
 const Terminal = styled.div`
@@ -111,7 +112,7 @@ const Scroll = styled.div`
   text-align: center;
   overflow: scroll;
   // margin-top: 1.5rem;
-  // padding-top: 1rem;
+  padding: 0.5rem;
   border-radius: 10px;
   background: ${theme.blackGreyColor};
 `;
@@ -346,10 +347,10 @@ const Home = () => {
               </Button>
             </TerminalHeader>
             {terminalOpened===TERMINAL? 
-              <div style={{margin:"10px"}}>
+              <Scroll>
               <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
               <input type={"text"} style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}></input>
-              </div>
+              </Scroll>
             :
             <Scroll>
             <div style={{color:"white", padding:"10px",float:"left"}}>
