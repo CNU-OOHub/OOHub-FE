@@ -92,7 +92,8 @@ const Terminal = styled.div`
   height: 13rem;
   background-color: ${theme.blackGreyColor};
   border-top: 0.5px solid grey;
-  // display: flex;
+  display: flex;
+  flex-direction: column;
   // bottom: 0;
   /* overflow: auto;
   resize: inherit; */
@@ -100,6 +101,19 @@ const Terminal = styled.div`
 
 const TerminalHeader = styled.div`
   margin-left: 1rem;
+`;
+
+const Scroll = styled.div`
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: scroll;
+  // margin-top: 1.5rem;
+  // padding-top: 1rem;
+  border-radius: 10px;
+  background: ${theme.blackGreyColor};
 `;
 
 const Home = () => {
@@ -163,9 +177,192 @@ const Home = () => {
   return (
     <Body backgroundColor={theme.darkGreyColor}>
       <FlexRow>
+<<<<<<< refs/remotes/origin/develop
         <SideMenu />
         {sideMenu === FOLDER && <FileView />}
         {sideMenu === GROUPS && <OrganizationView />}
+=======
+        <SideMenuStyle>
+          <Button
+            bgColor={theme.greyColor}
+            onClick={() => sideMenuClicked(FOLDER)}
+          >
+            <AiOutlineFolderOpen
+              style={{
+                marginTop: "1rem",
+                width: "100%",
+                borderLeft: sideMenu === FOLDER ? "5px solid white" : "none",
+              }}
+              size={35}
+              color={sideMenu === FOLDER ? "white" : theme.lightGreyColor}
+            />
+          </Button>
+          <Button
+            bgColor={theme.greyColor}
+            onClick={() => sideMenuClicked(SETTING)}
+          >
+            <AiOutlineSetting
+              style={{
+                marginTop: "1rem",
+                width: "100%",
+                borderLeft: sideMenu === SETTING ? "5px solid white" : "none",
+              }}
+              size={35}
+              color={sideMenu === SETTING ? "white" : theme.lightGreyColor}
+            />
+          </Button>
+          <Button
+            bgColor={theme.greyColor}
+            onClick={() => sideMenuClicked(GROUPS)}
+          >
+            <RiGroup2Line
+              style={{
+                marginTop: "1rem",
+                width: "100%",
+                borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
+              }}
+              size={35}
+              color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
+            />
+          </Button>
+        </SideMenuStyle>
+        <FileList>
+          <div
+            className="SearchArea"
+            style={{
+              height: "4rem",
+              paddingTop: "1rem",
+            }}
+          >
+            <FlexRow justifyContent="center">
+              <Input
+                className="SearchForm"
+                inputType="text"
+                placeholder="검색어"
+                height={2}
+                width={65}
+                fontSize={13}
+              />
+              <AiOutlineSearch size={23} color={theme.textGreyColor} />
+            </FlexRow>
+          </div>
+          <div>파일 리스트 들어올 자리</div>
+        </FileList>
+        <File>
+          <FileHeader>
+            <FlexRow justifyContent="center" flexGrow={1}>
+              <Text color={theme.textGreyColor} fontSize={1}>
+                {openedFile}
+              </Text>
+              <IoIosClose size={20} color={theme.textGreyColor} />
+              <div style={{marginLeft:"3vh"}}>
+              <VscRunAll IoIosClose size="20" color="green" style={{cursor:"pointer"}} onClick={() => {
+                  executeFile();
+                }}/>
+              </div>
+            </FlexRow>
+            <div style={{ width: "6rem" }}>
+              <DropDown
+                options={groups}
+                placeholder="그룹명"
+                color={theme.textGreyColor}
+                height={2}
+                fontSize={1.0}
+                backgroundColor="#373737"
+              />
+            </div>
+            <FlexRow flexGrow={1} justifyContent="center">
+              <Text color={theme.textGreyColor} fontSize={1}>
+                공유
+              </Text>
+              <Switch
+                onChange={(e) => {
+                  setFileShare((prev) => ({
+                    ...prev,
+                    available: e,
+                  }));
+                }}
+                checked={fileShare.available}
+                onColor={theme.primaryColor}
+                handleDiameter={17}
+                uncheckedIcon={false}
+                checkedIcon={false}
+                width={45}
+                height={25}
+              />
+            </FlexRow>
+          </FileHeader>
+          <FileContainer>
+          <FileContent 
+            name="fileContentArea" 
+            onChange={(e) => {
+                changeFileContent("contents",e.target.value);
+              }} 
+            onKeyDown = {(e) => {
+              // enterEvent()
+            }}>
+
+
+          </FileContent>
+
+          </FileContainer>
+          <Terminal>
+            <TerminalHeader>
+              <Button
+                color={
+                  terminalOpened === CONSOLE ? "white" : theme.lightGreyColor
+                }
+                fontSize={0.8}
+                bgColor={theme.blackGreyColor}
+                height={2}
+                marginRight={2}
+                fontWeight={400}
+                onClick={() => {
+                  terminalClicked(CONSOLE);
+                  console.log(fileShare.available);
+                }}
+                {...(terminalOpened === CONSOLE && {
+                  borderBottom: "1px solid white",
+                })}
+              >
+                콘솔
+              </Button>
+              <Button
+                color={
+                  terminalOpened === TERMINAL ? "white" : theme.lightGreyColor
+                }
+                fontSize={0.8}
+                bgColor={theme.blackGreyColor}
+                height={2}
+                fontWeight={400}
+                onClick={(e) => {
+                  terminalClicked(TERMINAL);
+                }}
+                {...(terminalOpened === TERMINAL && {
+                  borderBottom: "1px solid white",
+                })}
+              >
+                터미널
+              </Button>
+            </TerminalHeader>
+            {terminalOpened===TERMINAL? 
+              <div style={{margin:"10px"}}>
+              <text style={{color:"white", float:"left" ,outline: "none"}}>{'>>>  '} </text>             
+              <input type={"text"} style={{backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}></input>
+              </div>
+            :
+            <Scroll>
+            <div style={{color:"white", padding:"10px",float:"left"}}>
+              {runResult.map((result)=>{
+                return <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",}}>{result}</p>;
+              })}
+            </div>
+            </Scroll>
+            }
+            
+          </Terminal>
+        </File>
+>>>>>>> feat: 콘솔, 터미널 css 구분
       </FlexRow>
     </Body>
   );

@@ -52,28 +52,28 @@ const Monitoring = () => {
                   });
                   routeChange()
                 }}>           
-    <Text fontSize='2' fontWeight='bold'> {'<'} Resource Monitoring For admin</Text>
+    <Text fontSize={2} fontWeight='bold'> {'<'} Resource Monitoring For admin</Text>
     </div>
     <div style={{marginLeft:"5vh", width: '100%'}}>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex', justifyItems: 'center'}}>
-      <Text fontSize='1.7'> CPU </Text>
+      <Text fontSize={1.7}> CPU </Text>
       <Frame><Mdiv width={resources.data.cpuUsagePercent}></Mdiv></Frame>
-      <Text fontSize='1.7'> {resources.data.cpuUsagePercent}% </Text>
+      <Text fontSize={1.7}> {resources.data.cpuUsagePercent}% </Text>
       </div >
 
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
-      <Text fontSize='1.7'> GPU </Text>
+      <Text fontSize={1.7}> GPU </Text>
       <Frame><Mdiv width='0'></Mdiv></Frame>
-      <Text fontSize='1.7'> 0.00% </Text>
+      <Text fontSize={1.7}> 0.00% </Text>
       </div>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
-      <Text fontSize='1.7'> RAM </Text>
+      <Text fontSize={1.7}> RAM </Text>
       <Frame><Mdiv width={resources.data.usedRamUsage }> </Mdiv></Frame>
-      <Text fontSize='1.7'> {resources.data.usedRamUsage } Mib </Text>
+      <Text fontSize={1.7}> {resources.data.usedRamUsage } </Text>
       </div>
       <div style={{ textAlign: 'center',justifyContent: 'space-between', paddingTop: 20 }}>
-      <Text fontSize='2' fontWeight="40"> 사용한 공간 </Text>
-      <Text fontSize='2' marginLeft="40" fontWeight="700" color="red"> &nbsp; {workspaceUsage.usage} bytes </Text>
+      <Text fontSize={2} fontWeight="40"> 사용한 공간 </Text>
+      <Text fontSize={2} marginLeft="40" fontWeight="700" color="red"> &nbsp; {workspaceUsage.usage} bytes </Text>
       </div>
     </div>
 </div>):(
