@@ -1,6 +1,5 @@
 import SERVER from "./url";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 // 회원가입
@@ -141,6 +140,16 @@ export const addDepartment = async (departmentInfo) => {
 
 //////////////////////Organization/////////////////////////
 // organization 전체 목록 조회
+export const useGetAllOrganizations = (username) => {
+  return useQuery(
+    ["organizationList", username],
+    () => getAllOrganization(username),
+    {
+      staleTime: 5000,
+      cacheTime: Infinity,
+    }
+  );
+};
 export const getAllOrganizations = async () => {
   try {
     const { data } = await axios.get(`${SERVER}/api/v1/organization`, {});
@@ -225,17 +234,6 @@ export const getAllOrganization = async (username) => {
   } catch (err) {
     throw new Error("fetch all organization error");
   }
-};
-
-export const useGetAllOrganizations = (username) => {
-  return useQuery(
-    ["organizationList", username],
-    () => getAllOrganization(username),
-    {
-      staleTime: 5000,
-      cacheTime: Infinity,
-    }
-  );
 };
 
 // 그룹의 사용자 목록 조회
@@ -358,16 +356,18 @@ export const runLine = async (commandInfo) => {
 };
 
 // 파일 조회
-export const useGetFile = () => {
-  return useQuery(["file"], () => getFile(), {
+export const useGetFile = (filePath) => {
+  return useQuery(["file"], () => getFile(filePath), {
     staleTime: 5000,
     cacheTime: Infinity,
   });
 };
 
-export const getFile = async () => {
+export const getFile = async (filePath) => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files`, {});
+    const response = await axios.get(`${SERVER}/api/v1/files`, {
+      filePath: filePath,
+    });
     return response;
   } catch (err) {
     throw new Error("read file error");

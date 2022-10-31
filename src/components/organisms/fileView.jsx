@@ -2,31 +2,42 @@ import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { adminState, fileShareState, loginState } from "../../atom";
 import theme from "../../styles/theme";
-import Body from "../atoms/body";
-import { AiOutlineSearch } from "react-icons/ai";
-import { IoIosClose } from "react-icons/io";
-import { RiGroup2Line } from "react-icons/ri";
+import {
+  AiOutlineSearch,
+  AiFillCaretDown,
+  AiFillCaretUp,
+} from "react-icons/ai";
+import { IoCloseOutline } from "react-icons/io5";
+import { BsFolderPlus } from "react-icons/bs";
+import { FiFilePlus } from "react-icons/fi";
 import Button from "../atoms/button";
-import { CONSOLE, FOLDER, GROUPS, SETTING, TERMINAL } from "../../constants";
+import { CONSOLE, TERMINAL } from "../../constants";
 import styled from "styled-components";
-import FlexColumn from "../molecules/flexColumn";
 import FlexRow from "../molecules/flexRow";
 import Text from "../atoms/text";
 import DropDown from "../atoms/dropdown";
 import Switch from "react-switch";
 import Input from "../atoms/input";
 import { VscRunAll } from "react-icons/vsc";
-import SideMenu from "../molecules/sideMenu";
 import { Fragment } from "react";
+import FlexColumn from "../molecules/flexColumn";
+import { useRef } from "react";
+import { useGetAllOrganizations } from "../../api";
 
 const FileList = styled.div`
   display: flex;
   flex-direction: column;
-  width: 10rem;
+  width: 13rem;
   height: 92vh;
   background-color: ${theme.darkGreyColor};
   overflow: auto;
-  resize: horizontal;
+  white-space: nowrap;
+  //resize: horizontal;
+`;
+
+const SearchArea = styled.div`
+  height: 4rem;
+  padding-top: 1rem;
 `;
 
 const File = styled.div`
@@ -39,27 +50,17 @@ const File = styled.div`
 `;
 
 const FileHeader = styled.div`
-  //flex-grow: 0.1;
-  // display: inline-block;
   height: 4rem;
   align-items: center;
   flex-direction: row;
   display: flex;
-  // display: flex;
-  //border: 0.5px solid grey;
-  /* box-shadow: 0.5px 0.5px 8px 2px black; */
   background-color: #373737;
 `;
 
 const FileContainer = styled.div`
   display: inline-block;
   flex: 1;
-  // height: auto;
-  //height: 30rem;
-  //flex-grow: 10;
   background-color: ${theme.blackGreyColor};
-  // padding-top:1rem;
-  // padding-left:1rem;
 `;
 
 const FileContent = styled.textarea`
@@ -67,20 +68,15 @@ const FileContent = styled.textarea`
   color: white;
   width: 100%;
   height: 100%;
-  background-color: ${theme.fileContainerColor};
+  background-color: ${theme.blackGreyColor};
+  border: none;
 `;
 
 const Terminal = styled.div`
   display: inline-block;
-  //flex-grow: 4;
-  //height: 100%;
   height: 13rem;
   background-color: ${theme.blackGreyColor};
   border-top: 0.5px solid grey;
-  // display: flex;
-  // bottom: 0;
-  /* overflow: auto;
-  resize: inherit; */
 `;
 
 const TerminalHeader = styled.div`
@@ -89,8 +85,8 @@ const TerminalHeader = styled.div`
 
 const FileView = () => {
   const [login, setLogin] = useRecoilState(loginState);
-  const [admin, setAdmin] = useRecoilState(adminState);
-
+  const [sharedFileMenuOpened, SetSharedFileMenuOpened] = useState(false);
+  const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
   const [fileShare, setFileShare] = useRecoilState(fileShareState);
   const [openedFile, setOpenedFile] = useState("파일명");
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
@@ -99,28 +95,19 @@ const FileView = () => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
     }
-
-    // if (localStorage.getItem("isAdmin") === "true") {
-    //   setAdmin(true);
-    // }
   });
 
   const terminalClicked = (clickedValue) => {
     setTerminalOpened(clickedValue);
   };
-
-  const groups = ["그룹1", "그룹2", "그룹3"];
+  const { data: groups, isLoading } = useGetAllOrganizations(
+    localStorage.getItem("username")
+  );
 
   return (
-    <Fragment>
+    <>
       <FileList>
-        <div
-          className="SearchArea"
-          style={{
-            height: "4rem",
-            paddingTop: "1rem",
-          }}
-        >
+        <SearchArea>
           <FlexRow justifyContent="center">
             <Input
               className="SearchForm"
@@ -132,8 +119,140 @@ const FileView = () => {
             />
             <AiOutlineSearch size={23} color={theme.textGreyColor} />
           </FlexRow>
+        </SearchArea>
+
+        <div
+          style={{
+            alignItems: "center",
+            height: "3rem",
+            display: "flex",
+          }}
+        >
+          <Button
+            bgColor="rgb(0,0,0,0)"
+            onClick={() => {
+              SetSharedFileMenuOpened(!sharedFileMenuOpened);
+            }}
+          >
+            {sharedFileMenuOpened ? (
+              <AiFillCaretDown
+                size={20}
+                color={theme.textGreyColor}
+                style={{ margin: "0 0.5rem 0 0.5rem" }}
+              />
+            ) : (
+              <AiFillCaretUp
+                size={20}
+                color={theme.textGreyColor}
+                style={{ margin: "0 0.5rem 0 0.5rem" }}
+              />
+            )}
+          </Button>
+          <Text color={theme.textGreyColor} fontSize={1.0}>
+            공유파일
+          </Text>
         </div>
-        <div>파일 리스트 들어올 자리</div>
+        {sharedFileMenuOpened && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+
+              marginBottom: "0.5rem",
+              width: "min-content",
+            }}
+          >
+            <Text
+              color={theme.lightGreyColor}
+              fontSize={0.9}
+              marginLeft="0.5rem"
+            >
+              공유하는그룹명
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.pyㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.py
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.py
+            </Text>
+          </div>
+        )}
+        <div
+          style={{
+            alignItems: "center",
+            height: "3rem",
+            backgroundColor: `${theme.darkGreyColor}`,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button
+              bgColor="rgb(0,0,0,0)"
+              onClick={() => SetMyFileMenuOpened(!myFileMenuOpened)}
+            >
+              {myFileMenuOpened ? (
+                <AiFillCaretDown
+                  size={20}
+                  color={theme.textGreyColor}
+                  style={{ margin: "0 0.5rem 0 0.5rem" }}
+                />
+              ) : (
+                <AiFillCaretUp
+                  size={20}
+                  color={theme.textGreyColor}
+                  style={{ margin: "0 0.5rem 0 0.5rem" }}
+                />
+              )}
+            </Button>
+            <Text color={theme.textGreyColor} fontSize={1.0}>
+              내 파일
+            </Text>
+          </div>
+          <div>
+            <BsFolderPlus
+              size={20}
+              color={theme.textGreyColor}
+              style={{ marginRight: "0.5rem" }}
+            />
+            <FiFilePlus
+              size={20}
+              color={theme.textGreyColor}
+              style={{ marginRight: "0.5rem" }}
+            />
+          </div>
+        </div>
+        {myFileMenuOpened && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+
+              marginBottom: "0.5rem",
+              width: "min-content",
+            }}
+          >
+            <Text
+              color={theme.lightGreyColor}
+              fontSize={0.9}
+              marginLeft="0.5rem"
+            >
+              공유하는그룹명
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.pyㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.py
+            </Text>
+            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
+              공유하는파일명.py
+            </Text>
+          </div>
+        )}
       </FileList>
       <File>
         <FileHeader>
@@ -141,12 +260,20 @@ const FileView = () => {
             <Text color={theme.textGreyColor} fontSize={1}>
               {openedFile}
             </Text>
-            <IoIosClose size={20} color={theme.textGreyColor} />
-            <VscRunAll IoIosClose size="20" color="green" />
+            <IoCloseOutline size={20} color={theme.textGreyColor} />
+            <VscRunAll size={20} color="green" />
           </FlexRow>
           <div style={{ width: "6rem" }}>
             <DropDown
-              options={groups}
+              onChange={(e) => {
+                setFileShare((prev) => ({
+                  ...prev,
+                  groupName: e.target.value,
+                }));
+              }}
+              options={
+                isLoading ? [] : Array.from(groups, (group) => group.name)
+              }
               placeholder="그룹명"
               color={theme.textGreyColor}
               height={2}
@@ -160,10 +287,14 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                setFileShare((prev) => ({
-                  ...prev,
-                  available: e,
-                }));
+                if (fileShare.groupName === "") {
+                  alert("그룹명을 선택하여 주세요.");
+                } else {
+                  setFileShare((prev) => ({
+                    ...prev,
+                    available: e,
+                  }));
+                }
               }}
               checked={fileShare.available}
               onColor={theme.primaryColor}
@@ -219,7 +350,7 @@ const FileView = () => {
           </TerminalHeader>
         </Terminal>
       </File>
-    </Fragment>
+    </>
   );
 };
 

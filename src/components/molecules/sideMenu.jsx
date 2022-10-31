@@ -1,7 +1,6 @@
 import React from "react";
 import theme from "../../styles/theme";
 import styled from "styled-components";
-import { useState } from "react";
 import { FOLDER, GROUPS, SETTING } from "../../constants";
 import Button from "../atoms/button";
 import { AiOutlineFolderOpen, AiOutlineSetting } from "react-icons/ai";

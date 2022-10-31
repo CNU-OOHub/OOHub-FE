@@ -3,7 +3,7 @@ import { FOLDER } from "./constants";
 
 export const loginState = atom({ key: "login", default: false });
 
-export const adminState = atom({ key: "admin", default: true });
+export const adminState = atom({ key: "admin", default: false });
 
 export const adminCategoryModalVisibleState = atom({
   key: "adminCategoryModal",
@@ -15,11 +15,13 @@ export const adminPageState = atom({
   default: { pageName: "Authorization Area", visible: false },
 });
 
+// 한 파일에 대한 공유 싱태/\
 export const fileShareState = atom({
   key: "fileShare",
   default: {
     available: false,
     fileName: "",
+    groupName: "",
   },
 });
 
