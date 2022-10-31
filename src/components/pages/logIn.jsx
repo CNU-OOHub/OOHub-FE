@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Text from "../atoms/text";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { adminState, loginState } from "../../atom";
 
 const Logo = styled.img`
