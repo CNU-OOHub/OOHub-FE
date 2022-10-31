@@ -20,7 +20,7 @@ import DropDown from "../atoms/dropdown";
 import Switch from "react-switch";
 import Input from "../atoms/input";
 import { VscRunAll } from "react-icons/vsc";
-import { runFile } from "../../api";
+import { runFile, runLine } from "../../api";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 
 import { sideMenuState } from "../../atom";
@@ -127,8 +127,13 @@ const Home = () => {
   const [fileContents, setFileContents] = useState({
     contents: ""
   });
+  const [terminalLine, setTerminalLine] = useState({
+    command: ""
+  });
+
   const [codeLine, setCodeLine] = useState("");
   const [runResult, setRunResult] = useState([]);
+  const [runTerminalResult, setRunTerminalResult] = useState([]);
   const [result, setResult] = useState([]);
   const sideMenu = useRecoilValue(sideMenuState);
 
@@ -155,9 +160,20 @@ const Home = () => {
     // console.log(fileContents);
   };
 
+  const changeTerminalLine = (name, changedValue) => {
+    setTerminalLine((prev) => ({...prev, [name]: changedValue}));
+    console.log(terminalLine);
+  };
+
   const executeFileMutation = useMutation((fileContents) => runFile(fileContents), {
     onSuccess: (data) => {
       setRunResult(data.result);
+    },
+  });
+
+  const executeTerminalMutation = useMutation((terminalLine) => runLine(terminalLine), {
+    onSuccess: (data) => {
+      setRunTerminalResult(data.result);
     },
   });
 
@@ -165,13 +181,15 @@ const Home = () => {
   const executeFile = () => {
     console.log(fileContents)
     executeFileMutation.mutate(fileContents);
-    // const {result: resultList} = runFile(fileContents);
-    // console.log(resultList);
-    // if (typeof resultList !== 'undefined'){
-    //   setResult(resultList);      
-    //   console.log(resultList);
-    // }
   };
+
+  // 터미널 실행 
+  const terminalEntered = e => {
+    if(e.key === 'Enter'){
+      executeTerminalMutation.mutate(terminalLine);
+    }
+  }
+
 
   const groups = ["그룹1", "그룹2", "그룹3"];
 
@@ -302,8 +320,6 @@ const Home = () => {
             onKeyDown = {(e) => {
               // enterEvent()
             }}>
-
-
           </FileContent>
 
           </FileContainer>
@@ -349,7 +365,39 @@ const Home = () => {
             {terminalOpened===TERMINAL? 
               <Scroll>
               <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
-              <input type={"text"} style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}></input>
+              <input 
+              type={"text"} 
+              style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}
+              onChange={(e) => {
+                changeTerminalLine("command",e.target.value);
+              }} 
+              onKeyDown = {(e) => {
+              terminalEntered(e)
+              }}
+              ></input>
+              <br></br>
+              <div style={{color:"white",float:"left"}}>
+                {runTerminalResult.map((result)=>{
+                  return <div>
+                    <div>
+                  <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",float:"left"}}>{result}</p>
+                  <br></br>
+                  <br></br>      
+                </div>
+                <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>
+                  <input 
+              type={"text"} 
+              style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left"}}
+              onChange={(e) => {
+                changeTerminalLine("command",e.target.value);
+              }} 
+              onKeyDown = {(e) => {
+              terminalEntered(e)
+              }}
+              ></input>   
+                </div>;
+                })}
+              </div>
               </Scroll>
             :
             <Scroll>

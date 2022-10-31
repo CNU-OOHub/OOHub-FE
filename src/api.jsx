@@ -362,11 +362,12 @@ export const runFile = async (contents) => {
 };
 
 // 코드 한줄 실행
-export const runLine = async (commandInfo) => {
+export const runLine = async (command) => {
   try {
-    const response = await axios.post(`${SERVER}/api/run/line`, commandInfo);
+    const response = await axios.post(`${SERVER}/api/run/line`, command);
     if (response.status === 200) {
-      // TODO()
+      console.log(response);
+      return response.data;
     }
   } catch (error) {
     throw new Error("execute error");
