@@ -127,12 +127,15 @@ const Home = () => {
   const [fileContents, setFileContents] = useState({
     contents: ""
   });
+  // 터미널 input 입력값 
   const [terminalLine, setTerminalLine] = useState({
     command: ""
   });
-
-  const [codeLine, setCodeLine] = useState("");
-  const [runResult, setRunResult] = useState([]);
+  // 터미널 input 명령어, 결과값 map list 
+  // command: "",
+  // runTerminalResult: []
+  const [terminalDivList, setTerminalDivList] = useState([]);
+  const [runConsoleResult, setRunConsoleResult] = useState([]);
   const [runTerminalResult, setRunTerminalResult] = useState([]);
   const [result, setResult] = useState([]);
   const sideMenu = useRecoilValue(sideMenuState);
@@ -167,19 +170,20 @@ const Home = () => {
 
   const executeFileMutation = useMutation((fileContents) => runFile(fileContents), {
     onSuccess: (data) => {
-      setRunResult(data.result);
+      setRunConsoleResult(data.result);
     },
   });
 
   const executeTerminalMutation = useMutation((terminalLine) => runLine(terminalLine), {
     onSuccess: (data) => {
+      console.log(data.result[0]);
       setRunTerminalResult(data.result);
+      setTerminalDivList(...terminalDivList,data.result[0]);
     },
   });
 
   // 파일 실행 api 호출 
   const executeFile = () => {
-    console.log(fileContents)
     executeFileMutation.mutate(fileContents);
   };
 
@@ -363,52 +367,39 @@ const Home = () => {
               </Button>
             </TerminalHeader>
             {terminalOpened===TERMINAL? 
+            // 터미널 
               <Scroll>
-              <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
-              <input 
-              type={"text"} 
-              style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}
-              onChange={(e) => {
-                changeTerminalLine("command",e.target.value);
-              }} 
-              onKeyDown = {(e) => {
-              terminalEntered(e)
-              }}
-              ></input>
               <br></br>
-              <div style={{color:"white",float:"left"}}>
-                {runTerminalResult.map((result)=>{
-                  return <div>
-                    <div>
-                  <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",float:"left"}}>{result}</p>
-                  <br></br>
-                  <br></br>      
-                </div>
-                <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>
-                  <input 
-              type={"text"} 
-              style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left"}}
-              onChange={(e) => {
-                changeTerminalLine("command",e.target.value);
-              }} 
-              onKeyDown = {(e) => {
-              terminalEntered(e)
-              }}
-              ></input>   
-                </div>;
-                })}
-              </div>
+              <div style={{color:"white", padding:"10px",float:"left"}}>
+              {
+                  terminalDivList.map((result,i)=>{
+                    console.log(result[i]);
+                    return <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",}}>{result[i]}</p>;
+                  })              
+                } 
+              <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
+                <input 
+                type={"text"} 
+                style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}
+                onChange={(e) => {
+                  changeTerminalLine("command",e.target.value);
+                }} 
+                onKeyDown = {(e) => {
+                terminalEntered(e)
+                }}
+                ></input>
+              </div>;
               </Scroll>
             :
+            // 콘솔 
             <Scroll>
             <div style={{color:"white", padding:"10px",float:"left"}}>
-              {runResult.map((result)=>{
+              {runConsoleResult.map((result)=>{
                 return <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",}}>{result}</p>;
               })}
             </div>
             </Scroll>
             }
-            
           </Terminal>
         </File>
 >>>>>>> feat: 콘솔, 터미널 css 구분
