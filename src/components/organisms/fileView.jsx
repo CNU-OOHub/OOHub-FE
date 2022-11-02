@@ -107,7 +107,6 @@ const FileView = () => {
   const [fileShare, setFileShare] = useRecoilState(fileShareState);
   const [openedFile, setOpenedFile] = useState("파일명");
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
-const arr = [];
   const [fileContents, setFileContents] = useState({
     contents: ""
   });
@@ -127,6 +126,7 @@ const arr = [];
     result:[]
   });
 
+  
   useEffect(() => {
     if (sessionStorage.getItem("accessToken")) {
       setLogin(true);
@@ -158,12 +158,6 @@ const arr = [];
 
   const addTerminalDivList = ()=> {
     setTerminalDivList(...terminalDivList,terminalItem)
-  }
-
-
-
-  const hi = () => {
-    console.log(terminalItem.result);
   }
 
   const changeTerminalItem = (command, result) => {
