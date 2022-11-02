@@ -1,6 +1,6 @@
 import SERVER from "./url";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 
 // 회원가입
 export const addUser = async (userInfo) => {
@@ -145,7 +145,11 @@ export const addDepartment = async (departmentInfo) => {
 // organization 전체 목록 조회
 export const getAdminOrganizations = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/organization`, {});
+    const { data } = await axios.get(`${SERVER}/api/v1/organization`, {
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    });
     return data;
   } catch (err) {
     throw new Error("fetch organization error");
@@ -235,6 +239,16 @@ export const deleteOrganizationMember = async (organizationName, username) => {
 };
 
 // 사용자별 organization 목록 조회
+export const useGetAllOrganizations = (username) => {
+  return useQuery(
+    ["organizationList", username],
+    () => getAllOrganizations(username),
+    {
+      staleTime: 5000,
+    }
+  );
+};
+
 export const getAllOrganizations = async (username) => {
   try {
     const { data } = await axios.get(
@@ -245,17 +259,6 @@ export const getAllOrganizations = async (username) => {
   } catch (err) {
     throw new Error("fetch all organization error");
   }
-};
-
-export const useGetAllOrganizations = (username) => {
-  return useQuery(
-    ["organizationList", username],
-    () => getAllOrganizations(username),
-    {
-      staleTime: 5000,
-      cacheTime: Infinity,
-    }
-  );
 };
 
 // 그룹의 사용자 목록 조회
@@ -287,11 +290,28 @@ export const useGetOrganizationMemberList = (organizationName) => {
 
 //////////////////////공유 파일/////////////////////////
 // 그룹 내 공유 파일 목록 조회
-export const getAllSharedFile = async (organizationName) => {
+// organizationNames 가 array
+export const useGetAllSharedFiles = (organizationNames) => {
+  return useQueries({
+    queries: organizationNames.map((organizationName) => {
+      return {
+        queryKey: ["sharedFile", organizationName],
+        queryFn: () => getAllSharedFiles(organizationName),
+        enabled: organizationNames.length > 0,
+      };
+    }),
+  });
+};
+
+export const getAllSharedFiles = async (organizationName) => {
   try {
     const { data } = await axios.get(
       `${SERVER}/api/v1/${organizationName}/sharedFile`,
-      {}
+      {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+      }
     );
     return data;
   } catch (err) {
@@ -377,7 +397,7 @@ export const runLine = async (commandInfo) => {
   }
 };
 
-// 파일 조회
+// 내 파일 내용 조회
 export const useGetFile = (filePath) => {
   return useQuery(["file"], () => getFile(filePath), {
     staleTime: 5000,
@@ -396,7 +416,7 @@ export const getFile = async (filePath) => {
   }
 };
 
-// 파일 전체 조회
+// 내 파일 전체 조회
 export const useGetFiles = () => {
   return useQuery(["files"], () => getAllFile(), {
     staleTime: 5000,
@@ -406,8 +426,12 @@ export const useGetFiles = () => {
 
 export const getAllFile = async () => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files/all`, {});
-    return response;
+    const response = await axios.get(`${SERVER}/api/v1/files/all`, {
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    });
+    return response.data.directory;
   } catch (err) {
     throw new Error("read all file error");
   }

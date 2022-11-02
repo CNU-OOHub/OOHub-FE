@@ -6,6 +6,8 @@ import {
   AiOutlineSearch,
   AiFillCaretDown,
   AiFillCaretUp,
+  AiOutlineFolder,
+  AiOutlineFile,
 } from "react-icons/ai";
 import { IoCloseOutline } from "react-icons/io5";
 import { BsFolderPlus } from "react-icons/bs";
@@ -22,8 +24,56 @@ import { VscRunAll } from "react-icons/vsc";
 import { Fragment } from "react";
 import FlexColumn from "../molecules/flexColumn";
 import { useRef } from "react";
-import { useGetAllOrganizations } from "../../api";
-
+import {
+  useGetAllOrganizations,
+  useGetAllSharedFiles,
+  useGetFiles,
+} from "../../api";
+import FolderTree, { testData } from "react-folder-tree";
+import "react-folder-tree/dist/style.css";
+import { useMemo } from "react";
+const fData = {
+  name: "All Cryptos",
+  children: [
+    { name: "Bitcoin" },
+    { name: "Etherium" },
+    { name: "Polkadot" },
+    {
+      name: "POW",
+      children: [
+        { name: "Bitcoin" },
+        { name: "Litecoin" },
+        { name: "Bitcoin Cash" },
+      ],
+    },
+    {
+      name: "Public Chains",
+      children: [
+        { name: "Ripple" },
+        { name: "Chainlink" },
+        {
+          name: "POW",
+          children: [
+            { name: "Bitcoin" },
+            { name: "Litecoin" },
+            { name: "Bitcoin Cash" },
+          ],
+        },
+        {
+          name: "POS",
+          children: [
+            { name: "Etherium" },
+            { name: "EOS" },
+            {
+              name: "Crosschain",
+              children: [],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 const FileList = styled.div`
   display: flex;
   flex-direction: column;
@@ -87,9 +137,38 @@ const FileView = () => {
   const [login, setLogin] = useRecoilState(loginState);
   const [sharedFileMenuOpened, SetSharedFileMenuOpened] = useState(false);
   const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
-  const [fileShare, setFileShare] = useRecoilState(fileShareState);
-  const [openedFile, setOpenedFile] = useState("파일명");
+  //const [fileShare, setFileShare] = useRecoilState(fileShareState);
+  const [openedFileName, setOpenedFileName] = useState("파일명");
+  /*
+ 일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
+ /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
+
+ 화면단에서는 workspace 명으로 폴더 하나 만들고, 
+ 1) 그거 누르면 key에서 k/로 시작하는 폴더들 가져와서 보여주고, k key에 있는 values에서 folderName에 없는 애들만 파일로 표시해서 보여줌.
+ 
+ 파일이든 폴더든 누르면 폴더명을 저장하는애에서 있으면 폴더로 판단해서 1)로 다시 반복, 만약 없으면 파일로 판단해서 api 불러서 내용 보여주기.
+ */
+
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
+  // openedFile에 클릭한 파일명을 가져와서 넣고
+  // "" 이 아닐때만 file 몸통 보여주기. ""이면 그냥 oohub 파일을 눌러주세요! 이런거 나오게
+  // fileShare recoil은 필요 없을 듯. 굳이 recoil로 안하고 그냥 useState에다가 저장만 해도 될듯.
+  const [sharedFiles, setSharedFiles] = useState([]);
+  const onTreeStateChange = (state, event) => console.log(state, event);
+  const [groupNames, setGroupNames] = useState([]);
+
+  // 사용자가 속한 그룹 get
+  const { data: groups, isLoading: getOrganizationIsLoading } =
+    useGetAllOrganizations(localStorage.getItem("username"));
+
+  const useSharedFiles = useGetAllSharedFiles(groupNames);
+
+  useEffect(() => {
+    if (!getOrganizationIsLoading) {
+      const temp = Array.from(groups, (group) => group.name);
+      setGroupNames(temp);
+    }
+  }, [getOrganizationIsLoading, groups]);
 
   useEffect(() => {
     if (sessionStorage.getItem("accessToken")) {
@@ -100,9 +179,6 @@ const FileView = () => {
   const terminalClicked = (clickedValue) => {
     setTerminalOpened(clickedValue);
   };
-  const { data: groups, isLoading } = useGetAllOrganizations(
-    localStorage.getItem("username")
-  );
 
   return (
     <>
@@ -124,7 +200,7 @@ const FileView = () => {
         <div
           style={{
             alignItems: "center",
-            height: "3rem",
+            height: "2rem",
             display: "flex",
           }}
         >
@@ -157,33 +233,77 @@ const FileView = () => {
             style={{
               display: "flex",
               flexDirection: "column",
-
               marginBottom: "0.5rem",
               width: "min-content",
             }}
           >
-            <Text
-              color={theme.lightGreyColor}
-              fontSize={0.9}
-              marginLeft="0.5rem"
-            >
-              공유하는그룹명
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.pyㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.py
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.py
-            </Text>
+            {!getOrganizationIsLoading &&
+              groupNames.map((group, idx) => {
+                return (
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <AiOutlineFolder
+                        size={15}
+                        color={theme.lightGreyColor}
+                        style={{ marginLeft: "0.5rem" }}
+                      />
+                      <Text
+                        color={theme.lightGreyColor}
+                        fontSize={0.9}
+                        fontWeight={600}
+                        marginLeft="0.5rem"
+                      >
+                        {group}
+                      </Text>
+                    </div>
+                    <div>
+                      {!useSharedFiles[idx].isLoading &&
+                        useSharedFiles[idx]["data"].length > 0 &&
+                        // useSharedFiles[idx]["data"][0] !== undefined &&
+                        useSharedFiles[idx]["data"].map((fileInfo) => {
+                          console.log(fileInfo);
+                          return (
+                            <div
+                              key={fileInfo.filepath}
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <AiOutlineFile
+                                size={15}
+                                color={theme.lightGreyColor}
+                                style={{ marginLeft: "1rem" }}
+                              />
+                              <Text
+                                onClick={() => {
+                                  console.log("hi");
+                                }}
+                                color={theme.lightGreyColor}
+                                fontSize={0.9}
+                                fontWeight={600}
+                                marginLeft="0.5rem"
+                              >
+                                {fileInfo.filename}
+                              </Text>
+                              <Text
+                                color={theme.lightGreyColor}
+                                fontSize={0.5}
+                                fontWeight={300}
+                                marginLeft="0.5rem"
+                              >
+                                {fileInfo.filepath}
+                              </Text>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         )}
         <div
           style={{
             alignItems: "center",
-            height: "3rem",
+            height: "2rem",
             backgroundColor: `${theme.darkGreyColor}`,
             display: "flex",
             justifyContent: "space-between",
@@ -214,15 +334,11 @@ const FileView = () => {
           </div>
           <div>
             <BsFolderPlus
-              size={20}
+              size={15}
               color={theme.textGreyColor}
               style={{ marginRight: "0.5rem" }}
             />
-            <FiFilePlus
-              size={20}
-              color={theme.textGreyColor}
-              style={{ marginRight: "0.5rem" }}
-            />
+            <FiFilePlus size={15} color={theme.textGreyColor} style={{}} />
           </div>
         </div>
         {myFileMenuOpened && (
@@ -235,6 +351,11 @@ const FileView = () => {
               width: "min-content",
             }}
           >
+            <FolderTree
+              data={fData}
+              onChange={onTreeStateChange}
+              showCheckbox={false}
+            />
             <Text
               color={theme.lightGreyColor}
               fontSize={0.9}
@@ -258,7 +379,7 @@ const FileView = () => {
         <FileHeader>
           <FlexRow justifyContent="center" flexGrow={1}>
             <Text color={theme.textGreyColor} fontSize={1}>
-              {openedFile}
+              {openedFileName}
             </Text>
             <IoCloseOutline size={20} color={theme.textGreyColor} />
             <VscRunAll size={20} color="green" />
@@ -266,14 +387,12 @@ const FileView = () => {
           <div style={{ width: "6rem" }}>
             <DropDown
               onChange={(e) => {
-                setFileShare((prev) => ({
-                  ...prev,
-                  groupName: e.target.value,
-                }));
+                // setFileShare((prev) => ({
+                //   ...prev,
+                //   groupName: e.target.value,
+                // }));
               }}
-              options={
-                isLoading ? [] : Array.from(groups, (group) => group.name)
-              }
+              options={getOrganizationIsLoading ? [] : groupNames}
               placeholder="그룹명"
               color={theme.textGreyColor}
               height={2}
@@ -287,16 +406,17 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                if (fileShare.groupName === "") {
-                  alert("그룹명을 선택하여 주세요.");
-                } else {
-                  setFileShare((prev) => ({
-                    ...prev,
-                    available: e,
-                  }));
-                }
+                // if (fileShare.groupName === "") {
+                //   alert("그룹명을 선택하여 주세요.");
+                // } else {
+                //   setFileShare((prev) => ({
+                //     ...prev,
+                //     available: e,
+                //   }));
+                // }
               }}
-              checked={fileShare.available}
+              //checked={fileShare.available}
+              checked={false}
               onColor={theme.primaryColor}
               handleDiameter={17}
               uncheckedIcon={false}
@@ -322,7 +442,7 @@ const FileView = () => {
               fontWeight={400}
               onClick={() => {
                 terminalClicked(CONSOLE);
-                console.log(fileShare.available);
+                //console.log(fileShare.available);
               }}
               {...(terminalOpened === CONSOLE && {
                 borderBottom: "1px solid white",
