@@ -7,7 +7,7 @@ import { adminPageState } from "../../atom";
 import {
   RESOURCE_MONITORING,
 } from "../../constants";
-
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 const Frame = styled.div`
@@ -28,8 +28,8 @@ const Mdiv = styled.div`
 
 const Monitoring = () => {
 
-  const { data: resources } = useGetResources();
-  const { data: workspaceUsage } = useWorkspaceUsage();
+  const { data: resources, isLoading: getResourcesIsLoading } = useGetResources();
+  const { data: workspaceUsage, isLoading: workspaceIsLoading } = useWorkspaceUsage();
 
   console.log("resouce:"+JSON.stringify(resources));
   console.log("workspaceUsage:"+JSON.stringify(workspaceUsage));
@@ -42,9 +42,9 @@ const Monitoring = () => {
 
   const [adminPage, setAdminPage] = useRecoilState(adminPageState);
 
-
   return (
-    (typeof resources !== "undefined")&& (typeof workspaceUsage !== "undefined") ? (<div style={{ height: "92vh" }}>
+  
+    (!getResourcesIsLoading)&& (!workspaceIsLoading) ? (<div style={{ height: "92vh" }}>
     <div style={{ paddingTop: 50, paddingLeft:50, cursor:"pointer"}} onClick={() => {
                   setAdminPage({
                     pageName: RESOURCE_MONITORING,
@@ -68,8 +68,8 @@ const Monitoring = () => {
       </div>
       <div style={{ margin: 70, paddingLeft: 60, display: 'flex' }}>
       <Text fontSize={1.7}> RAM </Text>
-      <Frame><Mdiv width={resources.data.usedRamUsage }> </Mdiv></Frame>
-      <Text fontSize={1.7}> {resources.data.usedRamUsage } </Text>
+      <Frame><Mdiv width={Number(resources.data.totalRamUsage.slice(0,-2)*1000)/Number(resources.data.usedRamUsage.slice(0,-2)) }> </Mdiv></Frame>
+      <Text fontSize={1.7}> {resources.data.usedRamUsage}</Text>
       </div>
       <div style={{ textAlign: 'center',justifyContent: 'space-between', paddingTop: 20 }}>
       <Text fontSize={2} fontWeight="40"> 사용한 공간 </Text>

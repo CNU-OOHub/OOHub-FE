@@ -107,7 +107,6 @@ const FileView = () => {
   const [fileShare, setFileShare] = useRecoilState(fileShareState);
   const [openedFile, setOpenedFile] = useState("파일명");
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
-
   const [fileContents, setFileContents] = useState({
     contents: ""
   });
@@ -121,6 +120,11 @@ const FileView = () => {
   const [terminalDivList, setTerminalDivList] = useState([]);
   const [runConsoleResult, setRunConsoleResult] = useState([]);
   const [runTerminalResult, setRunTerminalResult] = useState([]);
+
+  const [terminalItem,setTerminalItem] = useState({
+    command:"",
+    result:[]
+  });
 
   
   useEffect(() => {
@@ -138,6 +142,7 @@ const FileView = () => {
     }
   });
 
+  
   const terminalClicked = (clickedValue) => {
     setTerminalOpened(clickedValue);
   };
@@ -149,8 +154,25 @@ const FileView = () => {
 
   const changeTerminalLine = (name, changedValue) => {
     setTerminalLine((prev) => ({...prev, [name]: changedValue}));
-    console.log(terminalLine);
+    // console.log(terminalLine);
   };
+
+  const addTerminalDivList = ()=> {
+    setTerminalDivList(...terminalDivList,terminalItem)
+  }
+
+  const changeTerminalItem = (command, result) => {
+    console.log(command);
+    console.log(result);
+  
+    setTerminalItem((prev) => ({...prev, command:command}));
+    setTerminalItem((prev) => ({...prev, result:result}));
+
+    addTerminalDivList()
+    setTerminalDivList(...(terminalDivList),{"command":command, "result":result})
+
+    console.log(terminalDivList)
+  }
 
   const executeFileMutation = useMutation((fileContents) => runFile(fileContents), {
     onSuccess: (data) => {
@@ -162,7 +184,7 @@ const FileView = () => {
     onSuccess: (data) => {
       console.log(data.result[0]);
       setRunTerminalResult(data.result);
-      setTerminalDivList(...terminalDivList,data.result[0]);
+      changeTerminalItem(terminalLine,data.result);
     },
   });
 
@@ -431,25 +453,27 @@ const FileView = () => {
             {terminalOpened===TERMINAL? 
             // 터미널 
               <Scroll>
-              <br></br>
               <div style={{color:"white", padding:"10px",float:"left"}}>
-              {
+              {/* {terminalDivList &&
                   terminalDivList.map((result,i)=>{
                     console.log(result[i]);
                     return <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",}}>{result[i]}</p>;
                   })              
-                } 
+              }  */}
               <text style={{color:"white", float:"left" ,outline: "none", fontWeight:"bolder"}}>{'>>>  '} </text>             
                 <input 
-                type={"text"} 
+                type={"text"}
                 style={{outline:"none",backgroundColor:theme.blackGreyColor, color:"white", border:"none", float:"left", marginLeft:"10px"}}
                 onChange={(e) => {
                   changeTerminalLine("command",e.target.value);
                 }} 
                 onKeyDown = {(e) => {
-                terminalEntered(e)
+                terminalEntered(e);
                 }}
                 ></input>
+                <br></br>
+               <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",float:"left"}}>{terminalItem.result}</p>
+
               </div>;
               </Scroll>
             :
