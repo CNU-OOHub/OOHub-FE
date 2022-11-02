@@ -142,6 +142,7 @@ const FileView = () => {
     }
   });
 
+  
   const terminalClicked = (clickedValue) => {
     setTerminalOpened(clickedValue);
   };

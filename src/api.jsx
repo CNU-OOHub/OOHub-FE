@@ -427,6 +427,7 @@ export const useGetResources = () => {
   return useQuery(["resources"], () => getAllResource(), {
     staleTime: 5000,
     cacheTime: Infinity,
+    refetchInterval: 1000
   });
 };
 
