@@ -366,8 +366,7 @@ export const deleteSharedFile = async (organizationName, fileName) => {
   }
 };
 
-
-// 파일로 실행 
+// 파일로 실행
 export const runFile = async (contents) => {
   try {
     const response = await axios.post(`${SERVER}/api/run/file`, contents);
@@ -428,7 +427,7 @@ export const getAllFile = async () => {
         Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
       },
     });
-    return response.data.directory;
+    return response.data;
   } catch (err) {
     throw new Error("read all file error");
   }
@@ -451,7 +450,7 @@ export const useGetResources = () => {
   return useQuery(["resources"], () => getAllResource(), {
     staleTime: 5000,
     cacheTime: Infinity,
-    refetchInterval: 1000
+    refetchInterval: 1000,
   });
 };
 
