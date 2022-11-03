@@ -122,7 +122,7 @@ const FileView = () => {
   const [admin, setAdmin] = useRecoilState(adminState);
   const [sharedFileMenuOpened, SetSharedFileMenuOpened] = useState(false);
   const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
-  //const [fileShare, setFileShare] = useRecoilState(fileShareState);
+  const [isFileShared, setIsFileShared] = useState(false);
   const [openedFileName, setOpenedFileName] = useState("파일명");
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
@@ -200,7 +200,7 @@ const FileView = () => {
         console.log(filePathInfo.filePath);
         setIsFileClicked(false);
         changeFileContent("contents", fileData.contents.join("\r\n"));
-        setSharedFiles(fileData.isShared);
+        setIsFileShared(fileData.isShared);
       });
     }
   });
