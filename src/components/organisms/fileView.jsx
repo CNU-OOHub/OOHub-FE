@@ -655,7 +655,7 @@ const FileView = () => {
                   return (
                     <p
                       color="white"
-                      style={{ fontSize: "1.2rem", fontWeight: "normal" }}
+                      style={{ fontSize: "1.2rem", fontWeight: "normal", textAlign:"left"}}
                     >
                       {result}
                     </p>
