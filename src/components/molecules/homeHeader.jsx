@@ -5,8 +5,16 @@ import theme from "../../styles/theme";
 import Logo from "../atoms/logo";
 import Text from "../atoms/text";
 import FlexRow from "./flexRow";
+import { useNavigate } from "react-router-dom";
 
 const HomeHeader = () => {
+
+  let navigate = useNavigate(); 
+
+  const routeChange = () =>{ 
+    navigate(`/monitoring`);
+  }
+
   const [adminCategoryModalVisible, setAdminCategoryModalVisible] =
     useRecoilState(adminCategoryModalVisibleState);
   const [admin, setAdmin] = useRecoilState(adminState);
@@ -14,6 +22,11 @@ const HomeHeader = () => {
   const onClickAdminButton = () => {
     setAdminCategoryModalVisible(!adminCategoryModalVisible);
   };
+
+  const onClickMonitoringButton = () => {
+    routeChange();
+  };
+
   return (
     <div
       style={{
@@ -30,8 +43,8 @@ const HomeHeader = () => {
         <Text color={theme.textGreyColor}>Run</Text>
         <Text color={theme.textGreyColor}>Settings</Text>
         <Text color={theme.textGreyColor}>Help</Text>
-        <Text />
-        <Text />
+        <Text color={theme.textGreyColor} onClick={onClickMonitoringButton}>Monitoring</Text>
+        <Text/>
         <Text color={theme.primaryColor}>
           {localStorage.getItem("departmentName")}
         </Text>
