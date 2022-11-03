@@ -282,9 +282,16 @@ const FileView = () => {
   } = useGetFile(filePathInfo);
 
   // 파일 클릭
-  const fileClicked = (fileName) => {
-    setOpenedFileName(fileName);
-    const path = "/oodd/" + fileName;
+  const fileClicked = (fileInfo) => {
+    let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
+    let temp = myFiles; // 클릭한 파일의 부모 path
+    const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
+    console.log(pathIndex);
+    for (var i = 0; i < pathIndex.length; i++) {
+      path += "/" + temp.children[pathIndex[i]].name;
+      temp = temp.children[pathIndex[i]];
+    }
+    setOpenedFileName(fileInfo.nodeData.name);
     changeFilePath("filePath", path);
     setIsFileClicked(true);
   };
@@ -474,14 +481,7 @@ const FileView = () => {
               onChange={onTreeStateChange}
               showCheckbox={false}
               onNameClick={(fileInfo) => {
-                let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
-                let temp = myFiles; // 클릭한 파일의 부모 path
-                const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
-                for (var i = 0; i < pathIndex.length; i++) {
-                  path += "/" + temp.children[pathIndex[i]].name;
-                  temp = temp.children[pathIndex[i]];
-                }
-                console.log(path);
+                fileClicked(fileInfo);
               }}
             />
           </div>
