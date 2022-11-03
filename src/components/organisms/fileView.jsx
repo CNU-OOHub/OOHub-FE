@@ -34,56 +34,14 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { IoCloseOutline } from "react-icons/io5";
 import { BsFolderPlus } from "react-icons/bs";
 import { FiFilePlus } from "react-icons/fi";
+import { GoOrganization } from "react-icons/go";
+import { BiGroup } from "react-icons/bi";
 import { Fragment } from "react";
 import FlexColumn from "../molecules/flexColumn";
 import { useRef } from "react";
 
 import FolderTree, { testData } from "react-folder-tree";
 import "react-folder-tree/dist/style.css";
-import { useMemo } from "react";
-
-const fData = {
-  name: "All Cryptos",
-  children: [
-    { name: "Bitcoin" },
-    { name: "Etherium" },
-    { name: "Polkadot" },
-    {
-      name: "POW",
-      children: [
-        { name: "Bitcoin" },
-        { name: "Litecoin" },
-        { name: "Bitcoin Cash" },
-      ],
-    },
-    {
-      name: "Public Chains",
-      children: [
-        { name: "Ripple" },
-        { name: "Chainlink" },
-        {
-          name: "POW",
-          children: [
-            { name: "Bitcoin" },
-            { name: "Litecoin" },
-            { name: "Bitcoin Cash" },
-          ],
-        },
-        {
-          name: "POS",
-          children: [
-            { name: "Etherium" },
-            { name: "EOS" },
-            {
-              name: "Crosschain",
-              children: [],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
 
 const FileList = styled.div`
   display: flex;
@@ -178,7 +136,7 @@ const FileView = () => {
   // openedFile에 클릭한 파일명을 가져와서 넣고
   // "" 이 아닐때만 file 몸통 보여주기. ""이면 그냥 oohub 파일을 눌러주세요! 이런거 나오게
   // fileShare recoil은 필요 없을 듯. 굳이 recoil로 안하고 그냥 useState에다가 저장만 해도 될듯.
-  const [sharedFiles, setSharedFiles] = useState([]);
+  // const [sharedFiles, setSharedFiles] = useState([]);
   const onTreeStateChange = (state, event) => console.log(state, event);
   const [groupNames, setGroupNames] = useState([]);
 
@@ -186,7 +144,16 @@ const FileView = () => {
   const { data: groups, isLoading: getOrganizationIsLoading } =
     useGetAllOrganizations(localStorage.getItem("username"));
 
+  // 사용자가 속한 그룹의 공유된 파일 get
   const useSharedFiles = useGetAllSharedFiles(groupNames);
+
+  // 내 파일 전체 get
+  const { data: myFiles, isLoading: myFilesIsLoading } = useGetFiles();
+
+  if (!myFilesIsLoading) {
+    console.log(myFiles);
+    // TODO : 내 파일들의 path 저장
+  }
 
   useEffect(() => {
     if (!getOrganizationIsLoading) {
@@ -354,7 +321,7 @@ const FileView = () => {
                     key={group}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <AiOutlineFolder
+                      <BiGroup
                         size={15}
                         color={theme.lightGreyColor}
                         style={{ marginLeft: "0.5rem" }}
@@ -380,7 +347,7 @@ const FileView = () => {
                               style={{ display: "flex", alignItems: "center" }}
                             >
                               <AiOutlineFile
-                                size={15}
+                                size={13}
                                 color={theme.lightGreyColor}
                                 style={{ marginLeft: "1rem" }}
                               />
@@ -450,7 +417,11 @@ const FileView = () => {
               color={theme.textGreyColor}
               style={{ marginRight: "0.5rem" }}
             />
-            <FiFilePlus size={15} color={theme.textGreyColor} style={{}} />
+            <FiFilePlus
+              size={15}
+              color={theme.textGreyColor}
+              style={{ marginRight: "0.5rem" }}
+            />
           </div>
         </div>
         {myFileMenuOpened && (
@@ -458,32 +429,28 @@ const FileView = () => {
             style={{
               display: "flex",
               flexDirection: "column",
-
+              color: theme.lightGreyColor,
               marginBottom: "0.5rem",
               width: "min-content",
+              fontWeight: 600,
+              fontSize: "0.9rem",
             }}
           >
             <FolderTree
-              data={fData}
+              data={!myFilesIsLoading ? myFiles : []}
               onChange={onTreeStateChange}
               showCheckbox={false}
+              onNameClick={(fileInfo) => {
+                let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
+                let temp = myFiles; // 클릭한 파일의 부모 path
+                const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
+                for (var i = 0; i < pathIndex.length; i++) {
+                  path += "/" + temp.children[pathIndex[i]].name;
+                  temp = temp.children[pathIndex[i]];
+                }
+                console.log(path);
+              }}
             />
-            <Text
-              color={theme.lightGreyColor}
-              fontSize={0.9}
-              marginLeft="0.5rem"
-            >
-              공유하는그룹명
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.pyㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.py
-            </Text>
-            <Text color={theme.lightGreyColor} fontSize={0.9} marginLeft="1rem">
-              공유하는파일명.py
-            </Text>
           </div>
         )}
       </FileList>
