@@ -29,6 +29,7 @@ import {
   useGetAllOrganizations,
   useGetAllSharedFiles,
   useGetFiles,
+  useGetFile,
 } from "../../api";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { IoCloseOutline } from "react-icons/io5";
@@ -89,6 +90,7 @@ const FileContent = styled.textarea`
   height: 100%;
   background-color: ${theme.blackGreyColor};
   border: none;
+  white-space: pre-wrap;
 `;
 
 const Terminal = styled.div`
@@ -120,8 +122,10 @@ const FileView = () => {
   const [admin, setAdmin] = useRecoilState(adminState);
   const [sharedFileMenuOpened, SetSharedFileMenuOpened] = useState(false);
   const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
-  //const [fileShare, setFileShare] = useRecoilState(fileShareState);
+  const [isFileShared, setIsFileShared] = useState(false);
   const [openedFileName, setOpenedFileName] = useState("파일명");
+  const [sharedFileOrganizationName, setSharedFileOrganizationName] =
+    useState("그룹명");
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
  /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
@@ -139,6 +143,10 @@ const FileView = () => {
   // const [sharedFiles, setSharedFiles] = useState([]);
   const onTreeStateChange = (state, event) => console.log(state, event);
   const [groupNames, setGroupNames] = useState([]);
+  const [filePathInfo, setFilePathInfo] = useState({
+    filePath: "",
+  });
+  const [isFileClicked, setIsFileClicked] = useState(false);
 
   // 사용자가 속한 그룹 get
   const { data: groups, isLoading: getOrganizationIsLoading } =
@@ -149,6 +157,14 @@ const FileView = () => {
 
   // 내 파일 전체 get
   const { data: myFiles, isLoading: myFilesIsLoading } = useGetFiles();
+
+  // 파일 정보 조회
+  const {
+    isLoading: isLoadingGetFile,
+    refetch,
+    isFetched,
+    data: fileData,
+  } = useGetFile(filePathInfo);
 
   if (!myFilesIsLoading) {
     console.log(myFiles);
@@ -188,6 +204,18 @@ const FileView = () => {
     if (localStorage.getItem("isAdmin") === "true") {
       setAdmin(true);
     }
+    if (isFileClicked) {
+      refetch().then(() => {
+        setIsFileClicked(false);
+        changeFileContent("contents", fileData.contents.join("\r\n"));
+        setIsFileShared(fileData.isShared);
+        setSharedFileOrganizationName(
+          fileData.organizationName === ""
+            ? "그룹명"
+            : fileData.organizationName
+        );
+      });
+    }
   });
 
   const terminalClicked = (clickedValue) => {
@@ -197,6 +225,10 @@ const FileView = () => {
   const changeFileContent = (name, changedValue) => {
     setFileContents((prev) => ({ ...prev, [name]: changedValue }));
     // console.log(fileContents);
+  };
+
+  const changeFilePath = (name, changedValue) => {
+    setFilePathInfo((prev) => ({ ...prev, [name]: changedValue }));
   };
 
   const changeTerminalLine = (name, changedValue) => {
@@ -254,6 +286,21 @@ const FileView = () => {
     if (e.key === "Enter") {
       executeTerminalMutation.mutate(terminalLine);
     }
+  };
+
+  // 파일 클릭
+  const fileClicked = (fileInfo) => {
+    let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
+    let temp = myFiles; // 클릭한 파일의 부모 path
+    const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
+    console.log(pathIndex);
+    for (var i = 0; i < pathIndex.length; i++) {
+      path += "/" + temp.children[pathIndex[i]].name;
+      temp = temp.children[pathIndex[i]];
+    }
+    setOpenedFileName(fileInfo.nodeData.name);
+    changeFilePath("filePath", path);
+    setIsFileClicked(true);
   };
 
   return (
@@ -441,14 +488,7 @@ const FileView = () => {
               onChange={onTreeStateChange}
               showCheckbox={false}
               onNameClick={(fileInfo) => {
-                let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
-                let temp = myFiles; // 클릭한 파일의 부모 path
-                const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
-                for (var i = 0; i < pathIndex.length; i++) {
-                  path += "/" + temp.children[pathIndex[i]].name;
-                  temp = temp.children[pathIndex[i]];
-                }
-                console.log(path);
+                fileClicked(fileInfo);
               }}
             />
           </div>
@@ -475,13 +515,10 @@ const FileView = () => {
           <div style={{ width: "6rem" }}>
             <DropDown
               onChange={(e) => {
-                // setFileShare((prev) => ({
-                //   ...prev,
-                //   groupName: e.target.value,
-                // }));
+                setSharedFileOrganizationName(e.target.value);
               }}
               options={getOrganizationIsLoading ? [] : groupNames}
-              placeholder="그룹명"
+              placeholder={sharedFileOrganizationName}
               color={theme.textGreyColor}
               height={2}
               fontSize={1.0}
@@ -494,17 +531,13 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                // if (fileShare.groupName === "") {
-                //   alert("그룹명을 선택하여 주세요.");
-                // } else {
-                //   setFileShare((prev) => ({
-                //     ...prev,
-                //     available: e,
-                //   }));
-                // }
+                if (sharedFileOrganizationName === "") {
+                  alert("그룹명을 선택하여 주세요.");
+                } else {
+                  console.log(e.target);
+                }
               }}
-              //checked={fileShare.available}
-              checked={false}
+              checked={isFileShared}
               onColor={theme.primaryColor}
               handleDiameter={17}
               uncheckedIcon={false}
@@ -517,6 +550,7 @@ const FileView = () => {
         <FileContainer>
           <FileContent
             name="fileContentArea"
+            value={fileContents ? fileContents.contents : ""}
             onChange={(e) => {
               changeFileContent("contents", e.target.value);
             }}
@@ -622,7 +656,11 @@ const FileView = () => {
                   return (
                     <p
                       color="white"
-                      style={{ fontSize: "1.2rem", fontWeight: "normal", textAlign:"left"}}
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "normal",
+                        textAlign: "left",
+                      }}
                     >
                       {result}
                     </p>

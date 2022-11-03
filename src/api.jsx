@@ -394,20 +394,25 @@ export const runLine = async (command) => {
 };
 
 // 내 파일 내용 조회
-export const useGetFile = (filePath) => {
-  return useQuery(["file"], () => getFile(filePath), {
+export const useGetFile = (filePathInfo) => {
+  return useQuery(["file"], () => getFile(filePathInfo), {
     staleTime: 5000,
     cacheTime: Infinity,
+    enabled: filePathInfo.filePath.length > 0,
   });
 };
 
-export const getFile = async (filePath) => {
+export const getFile = async (filePathInfo) => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files`, {
-      filePath: filePath,
-    });
-    return response;
+    const response = await axios.post(
+      `${SERVER}/api/v1/files/info`,
+      filePathInfo
+    );
+    return response.data;
   } catch (err) {
+    if (err.response.data.status === 400) {
+      console.log(err);
+    }
     throw new Error("read file error");
   }
 };
