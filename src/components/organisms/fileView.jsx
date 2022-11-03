@@ -29,6 +29,7 @@ import {
   useGetAllOrganizations,
   useGetAllSharedFiles,
   useGetFiles,
+  useGetFile,
 } from "../../api";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { IoCloseOutline } from "react-icons/io5";
@@ -89,6 +90,7 @@ const FileContent = styled.textarea`
   height: 100%;
   background-color: ${theme.blackGreyColor};
   border: none;
+  white-space: pre-wrap;
 `;
 
 const Terminal = styled.div`
@@ -139,6 +141,10 @@ const FileView = () => {
   // const [sharedFiles, setSharedFiles] = useState([]);
   const onTreeStateChange = (state, event) => console.log(state, event);
   const [groupNames, setGroupNames] = useState([]);
+  const [filePathInfo, setFilePathInfo] = useState({
+    filePath: "",
+  });
+  const [isFileClicked, setIsFileClicked] = useState(false);
 
   // 사용자가 속한 그룹 get
   const { data: groups, isLoading: getOrganizationIsLoading } =
@@ -188,6 +194,15 @@ const FileView = () => {
     if (localStorage.getItem("isAdmin") === "true") {
       setAdmin(true);
     }
+    if (isFileClicked) {
+      refetch().then(() => {
+        console.log(fileData);
+        console.log(filePathInfo.filePath);
+        setIsFileClicked(false);
+        changeFileContent("contents", fileData.contents.join("\r\n"));
+        setSharedFiles(fileData.isShared);
+      });
+    }
   });
 
   const terminalClicked = (clickedValue) => {
@@ -197,6 +212,10 @@ const FileView = () => {
   const changeFileContent = (name, changedValue) => {
     setFileContents((prev) => ({ ...prev, [name]: changedValue }));
     // console.log(fileContents);
+  };
+
+  const changeFilePath = (name, changedValue) => {
+    setFilePathInfo((prev) => ({ ...prev, [name]: changedValue }));
   };
 
   const changeTerminalLine = (name, changedValue) => {
@@ -254,6 +273,20 @@ const FileView = () => {
     if (e.key === "Enter") {
       executeTerminalMutation.mutate(terminalLine);
     }
+  };
+
+  const {
+    isLoading: isLoadingGetFile,
+    refetch,
+    data: fileData,
+  } = useGetFile(filePathInfo);
+
+  // 파일 클릭
+  const fileClicked = (fileName) => {
+    setOpenedFileName(fileName);
+    const path = "/oodd/" + fileName;
+    changeFilePath("filePath", path);
+    setIsFileClicked(true);
   };
 
   return (
@@ -517,6 +550,7 @@ const FileView = () => {
         <FileContainer>
           <FileContent
             name="fileContentArea"
+            value={fileContents ? fileContents.contents : ""}
             onChange={(e) => {
               changeFileContent("contents", e.target.value);
             }}
@@ -622,7 +656,11 @@ const FileView = () => {
                   return (
                     <p
                       color="white"
-                      style={{ fontSize: "1.2rem", fontWeight: "normal", textAlign:"left"}}
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "normal",
+                        textAlign: "left",
+                      }}
                     >
                       {result}
                     </p>

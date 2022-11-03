@@ -401,13 +401,17 @@ export const useGetFile = (filePath) => {
   });
 };
 
-export const getFile = async (filePath) => {
+export const getFile = async (filePathInfo) => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files`, {
-      filePath: filePath,
-    });
-    return response;
+    const response = await axios.post(
+      `${SERVER}/api/v1/files/info`,
+      filePathInfo
+    );
+    return response.data;
   } catch (err) {
+    if (err.response.data.status === 400) {
+      console.log(err);
+    }
     throw new Error("read file error");
   }
 };
