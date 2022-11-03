@@ -394,10 +394,11 @@ export const runLine = async (command) => {
 };
 
 // 내 파일 내용 조회
-export const useGetFile = (filePath) => {
-  return useQuery(["file"], () => getFile(filePath), {
+export const useGetFile = (filePathInfo) => {
+  return useQuery(["file"], () => getFile(filePathInfo), {
     staleTime: 5000,
     cacheTime: Infinity,
+    enabled: filePathInfo.filePath.length > 0,
   });
 };
 

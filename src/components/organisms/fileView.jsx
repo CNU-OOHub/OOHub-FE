@@ -124,6 +124,8 @@ const FileView = () => {
   const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
   const [isFileShared, setIsFileShared] = useState(false);
   const [openedFileName, setOpenedFileName] = useState("파일명");
+  const [sharedFileOrganizationName, setSharedFileOrganizationName] =
+    useState("그룹명");
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
  /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
@@ -155,6 +157,14 @@ const FileView = () => {
 
   // 내 파일 전체 get
   const { data: myFiles, isLoading: myFilesIsLoading } = useGetFiles();
+
+  // 파일 정보 조회
+  const {
+    isLoading: isLoadingGetFile,
+    refetch,
+    isFetched,
+    data: fileData,
+  } = useGetFile(filePathInfo);
 
   if (!myFilesIsLoading) {
     console.log(myFiles);
@@ -196,11 +206,14 @@ const FileView = () => {
     }
     if (isFileClicked) {
       refetch().then(() => {
-        console.log(fileData);
-        console.log(filePathInfo.filePath);
         setIsFileClicked(false);
         changeFileContent("contents", fileData.contents.join("\r\n"));
         setIsFileShared(fileData.isShared);
+        setSharedFileOrganizationName(
+          fileData.organizationName === ""
+            ? "그룹명"
+            : fileData.organizationName
+        );
       });
     }
   });
@@ -274,12 +287,6 @@ const FileView = () => {
       executeTerminalMutation.mutate(terminalLine);
     }
   };
-
-  const {
-    isLoading: isLoadingGetFile,
-    refetch,
-    data: fileData,
-  } = useGetFile(filePathInfo);
 
   // 파일 클릭
   const fileClicked = (fileInfo) => {
@@ -508,13 +515,10 @@ const FileView = () => {
           <div style={{ width: "6rem" }}>
             <DropDown
               onChange={(e) => {
-                // setFileShare((prev) => ({
-                //   ...prev,
-                //   groupName: e.target.value,
-                // }));
+                setSharedFileOrganizationName(e.target.value);
               }}
               options={getOrganizationIsLoading ? [] : groupNames}
-              placeholder="그룹명"
+              placeholder={sharedFileOrganizationName}
               color={theme.textGreyColor}
               height={2}
               fontSize={1.0}
@@ -527,17 +531,13 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                // if (fileShare.groupName === "") {
-                //   alert("그룹명을 선택하여 주세요.");
-                // } else {
-                //   setFileShare((prev) => ({
-                //     ...prev,
-                //     available: e,
-                //   }));
-                // }
+                if (sharedFileOrganizationName === "") {
+                  alert("그룹명을 선택하여 주세요.");
+                } else {
+                  console.log(e.target);
+                }
               }}
-              //checked={fileShare.available}
-              checked={false}
+              checked={isFileShared}
               onColor={theme.primaryColor}
               handleDiameter={17}
               uncheckedIcon={false}
