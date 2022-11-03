@@ -349,7 +349,10 @@ const FileView = () => {
             {!getOrganizationIsLoading &&
               groupNames.map((group, idx) => {
                 return (
-                  <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div
+                    style={{ display: "flex", flexDirection: "column" }}
+                    key={group}
+                  >
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <AiOutlineFolder
                         size={15}
@@ -493,7 +496,6 @@ const FileView = () => {
             <IoIosClose size={20} color={theme.textGreyColor} />
             <div style={{ marginLeft: "3vh" }}>
               <VscRunAll
-                IoIosClose
                 size="20"
                 color="green"
                 style={{ cursor: "pointer" }}
