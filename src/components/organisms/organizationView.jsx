@@ -150,11 +150,6 @@ const OrganizationView = () => {
   const [changeAdminOrganizationView, setChangeAdminOrganizationView] =
     useState(false);
 
-  const organizationClicked = (text) => {
-    setClickedOrganizationName(text);
-    setIsClicked(true);
-  };
-
   React.useEffect(() => {
     if (changeOrganizationView) {
       refetchOrganization().then(() => {
@@ -166,7 +161,7 @@ const OrganizationView = () => {
         setChangeAdminOrganizationView(false);
       });
     }
-    if (changeMemberView) {
+    if (isClicked || changeMemberView) {
       refetchMember().then(() => {
         setChangeMemberView(false);
       });
@@ -176,7 +171,13 @@ const OrganizationView = () => {
     changeMemberView,
     changeOrganizationView,
     changeAdminOrganizationView,
+    isClicked,
   ]);
+
+  const organizationClicked = (text) => {
+    setClickedOrganizationName(text);
+    setIsClicked(true);
+  };
 
   const changeOrganizationInfo = (name, value) => {
     setOrganizationInfo((prev) => ({ ...prev, [name]: value }));
