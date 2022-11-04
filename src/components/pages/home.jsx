@@ -10,6 +10,7 @@ import FileView from "../organisms/fileView";
 import OrganizationView from "../organisms/organizationView";
 
 import { sideMenuState } from "../../atom";
+import SettingView from "../organisms/settingView";
 
 const Home = () => {
   const [login, setLogin] = useRecoilState(loginState);
@@ -31,6 +32,7 @@ const Home = () => {
         <SideMenu />
         {sideMenu === FOLDER && <FileView />}
         {sideMenu === GROUPS && <OrganizationView />}
+        {sideMenu === SETTING && <SettingView />}
       </FlexRow>
     </Body>
   );

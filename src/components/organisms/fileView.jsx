@@ -41,11 +41,12 @@ import "react-folder-tree/dist/style.css";
 const FileList = styled.div`
   display: flex;
   flex-direction: column;
-  width: 13rem;
+  width: 16rem;
   height: 92vh;
   background-color: ${theme.darkGreyColor};
   overflow: auto;
   white-space: nowrap;
+  padding-left: 3rem;
   //resize: horizontal;
 `;
 

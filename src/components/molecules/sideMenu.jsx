@@ -13,10 +13,11 @@ import { useNavigate } from "react-router-dom";
 const SideMenuStyle = styled.div`
   display: flex;
   flex-direction: column;
-  width: 5rem;
+  width: 3rem;
   min-height: 92vh;
   height: auto;
   background-color: ${theme.greyColor};
+  position: fixed;
 `;
 
 const SideMenu = () => {
@@ -47,6 +48,17 @@ const SideMenu = () => {
           color={sideMenu === FOLDER ? "white" : theme.lightGreyColor}
         />
       </Button>
+      <Button bgColor={theme.greyColor} onClick={() => sideMenuClicked(GROUPS)}>
+        <RiGroup2Line
+          style={{
+            marginTop: "1rem",
+            width: "100%",
+            borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
+          }}
+          size={35}
+          color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
+        />
+      </Button>
       <Button
         bgColor={theme.greyColor}
         onClick={() => sideMenuClicked(SETTING)}
@@ -61,21 +73,10 @@ const SideMenu = () => {
           color={sideMenu === SETTING ? "white" : theme.lightGreyColor}
         />
       </Button>
-      <Button bgColor={theme.greyColor} onClick={() => sideMenuClicked(GROUPS)}>
-        <RiGroup2Line
-          style={{
-            marginTop: "1rem",
-            width: "100%",
-            borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
-          }}
-          size={35}
-          color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
-        />
-      </Button>
       <BiLogOut
         style={{
-          bottom: 20,
-          width: "5rem",
+          bottom: 65,
+          width: "3rem",
           alignSelf: "center",
           position: "absolute",
           padding: "0",

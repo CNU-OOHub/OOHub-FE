@@ -26,6 +26,7 @@ const Content = styled.div`
   flex-direction: column;
   justify-content: center;
   vertical-align: middle;
+  padding-left: 3rem;
 `;
 
 const AdminContent = styled.div`
