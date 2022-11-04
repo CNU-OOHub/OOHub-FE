@@ -18,7 +18,12 @@ const Router = () => {
       <Header />
       {adminCategoryModalVisible && <AdminCategoryModal />}
       <Routes>
-        <Route path="/" element={<LogIn />} />
+        {sessionStorage.getItem("refreshToken") ? (
+          <Route path="/" element={<Home />} />
+        ) : (
+          <Route path="/" element={<LogIn />} />
+        )}
+
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/home" element={<Home />} />
