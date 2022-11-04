@@ -575,7 +575,7 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                if (sharedFileOrganizationName === "그룹명") {
+                if (sharedFileOrganizationName === "") {
                   alert("그룹명을 선택하여 주세요.");
                 } else {
                   if (isFileShared) {
