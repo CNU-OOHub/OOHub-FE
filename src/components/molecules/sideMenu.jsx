@@ -29,7 +29,7 @@ const SideMenu = () => {
 
   const logOutClicked = () => {
     sessionStorage.removeItem("accessToken");
-    // TODO : sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("refreshToken");
     localStorage.clear();
     navigate("/logIn");
   };

@@ -97,11 +97,7 @@ export const useWorkspaceUsage = () => {
 
 export const getWorkspaceUsage = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`);
     return data;
   } catch (err) {
     throw new Error("fetch worksapce usage error");
@@ -112,7 +108,7 @@ export const getWorkspaceUsage = async () => {
 // 부서 목록 조회
 export const getAllDepartments = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/department`, {});
+    const { data } = await axios.get(`${SERVER}/api/v1/department`);
     return data;
   } catch (err) {
     throw new Error("fetch department error");
@@ -146,11 +142,7 @@ export const addDepartment = async (departmentInfo) => {
 // organization 전체 목록 조회
 export const getAdminOrganizations = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/organization`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const { data } = await axios.get(`${SERVER}/api/v1/organization`);
     return data;
   } catch (err) {
     throw new Error("fetch organization error");
@@ -169,12 +161,7 @@ export const addOrganization = async (organizationInfo) => {
   try {
     const response = await axios.post(
       `${SERVER}/api/v1/organization`,
-      organizationInfo,
-      {
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      }
+      organizationInfo
     );
     if (response.status === 200) {
       alert("organization이 등록되었습니다");
@@ -253,8 +240,7 @@ export const useGetAllOrganizations = (username) => {
 export const getAllOrganizations = async (username) => {
   try {
     const { data } = await axios.get(
-      `${SERVER}/api/v1/organization/${username}/all`,
-      {}
+      `${SERVER}/api/v1/organization/${username}/all`
     );
     return data;
   } catch (err) {
@@ -266,8 +252,7 @@ export const getAllOrganizations = async (username) => {
 export const getOrganizationMemberList = async (organizationName) => {
   try {
     const { data } = await axios.get(
-      `${SERVER}/api/v1/organization/${organizationName}`,
-      {}
+      `${SERVER}/api/v1/organization/${organizationName}`
     );
     return data;
   } catch (error) {
@@ -307,12 +292,7 @@ export const useGetAllSharedFiles = (organizationNames) => {
 export const getAllSharedFiles = async (organizationName) => {
   try {
     const { data } = await axios.get(
-      `${SERVER}/api/v1/${organizationName}/sharedFile`,
-      {
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      }
+      `${SERVER}/api/v1/${organizationName}/sharedFile`
     );
     return data;
   } catch (err) {
@@ -343,8 +323,7 @@ export const addSharedFileInOrganization = async (
 export const getSharedFileContent = async (organizationName, fileName) => {
   try {
     const { data } = await axios.get(
-      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`,
-      {}
+      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`
     );
     return data;
   } catch (err) {
@@ -428,11 +407,7 @@ export const useGetFiles = () => {
 
 export const getAllFile = async () => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files/all`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const response = await axios.get(`${SERVER}/api/v1/files/all`);
     return response.data;
   } catch (err) {
     throw new Error("read all file error");
@@ -462,10 +437,7 @@ export const useGetResources = () => {
 
 export const getAllResource = async () => {
   try {
-    const response = await axios.get(
-      `${SERVER}/api/v1/monitoring/resources`,
-      {}
-    );
+    const response = await axios.get(`${SERVER}/api/v1/monitoring/resources`);
     return response;
   } catch (err) {
     throw new Error("read all file error");
