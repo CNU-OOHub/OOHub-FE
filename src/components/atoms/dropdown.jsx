@@ -19,6 +19,8 @@ const DropDown = ({
   backgroundColor = "white",
   color = "black",
   fontSize = 1.1,
+  disabled = false,
+  selectedValue,
 }) => {
   return (
     <DropDownBox
@@ -28,6 +30,8 @@ const DropDown = ({
       backgroundColor={backgroundColor}
       color={color}
       fontSize={fontSize}
+      disabled={disabled}
+      value={selectedValue}
     >
       <option value={placeholder} hidden color={color}>
         {placeholder}

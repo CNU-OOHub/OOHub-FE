@@ -25,6 +25,8 @@ import {
   useGetAllSharedFiles,
   useGetFiles,
   useGetFile,
+  addSharedFileInOrganization,
+  deleteSharedFile,
   useGetSharedFileContent
 } from "../../api";
 import { useMutation } from "@tanstack/react-query";
@@ -170,7 +172,7 @@ const FileView = () => {
     } = useGetSharedFileContent(opendGroupName, openedFileName, filePathInfo);
   
   if (!myFilesIsLoading) {
-    console.log(myFiles);
+    // console.log(myFiles);
     // TODO : 내 파일들의 path 저장
   }
 
@@ -209,14 +211,10 @@ const FileView = () => {
     }
     if (isFileClicked) {
       refetch().then(() => {
-        setIsFileClicked(false);
+        setSharedFileOrganizationName(fileData.organizationName);
         changeFileContent("contents", fileData.contents.join("\r\n"));
         setIsFileShared(fileData.isShared);
-        setSharedFileOrganizationName(
-          fileData.organizationName === ""
-            ? "그룹명"
-            : fileData.organizationName
-        );
+        setIsFileClicked(false);
       });
     }
 
@@ -328,6 +326,15 @@ const FileView = () => {
       setFileName(fileName);
     };
 
+
+  const clickedFileSharing = () => {
+    addSharedFileInOrganization(sharedFileOrganizationName, filePathInfo);
+  };
+
+  const clickedFileSharingStop = () => {
+    deleteSharedFile(sharedFileOrganizationName, openedFileName, filePathInfo);
+    setSharedFileOrganizationName("");
+  };
 
   return (
     <>
@@ -546,11 +553,13 @@ const FileView = () => {
                 setSharedFileOrganizationName(e.target.value);
               }}
               options={getOrganizationIsLoading ? [] : groupNames}
-              placeholder={sharedFileOrganizationName}
+              placeholder={"그룹명"}
+              selectedValue={sharedFileOrganizationName}
               color={theme.textGreyColor}
               height={2}
               fontSize={1.0}
               backgroundColor="#373737"
+              disabled={isFileShared}
             />
           </div>
           <FlexRow flexGrow={1} justifyContent="center">
@@ -559,10 +568,16 @@ const FileView = () => {
             </Text>
             <Switch
               onChange={(e) => {
-                if (sharedFileOrganizationName === "") {
+                if (sharedFileOrganizationName === "그룹명") {
                   alert("그룹명을 선택하여 주세요.");
                 } else {
-                  console.log(e.target);
+                  if (isFileShared) {
+                    setIsFileShared(false);
+                    clickedFileSharingStop();
+                  } else {
+                    setIsFileShared(true);
+                    clickedFileSharing();
+                  }
                 }
               }}
               checked={isFileShared}

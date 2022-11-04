@@ -315,17 +315,25 @@ export const getAllSharedFiles = async (organizationName) => {
 // 그룹 내 공유 파일 추가
 export const addSharedFileInOrganization = async (
   organizationName,
-  sharedFileInfo
+  filePathInfo
 ) => {
   try {
     const response = await axiosInstance.post(
       `${SERVER}/api/v1/${organizationName}/sharedFile`,
-      sharedFileInfo
+      filePathInfo,
+      {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+      }
     );
     if (response.status === 200) {
       alert("공유파일이 등록되었습니다");
     }
   } catch (error) {
+    if (error.response.data.status === 404) {
+      alert(error.response.data.message);
+    }
     console.log(error);
     throw new Error("Add shared file in organization error");
   }
@@ -354,10 +362,15 @@ export const getSharedFileContent = async (organizationName, fileName,filePath) 
 };
 
 // 그룹내 파일 공유 중지
-export const deleteSharedFile = async (organizationName, fileName) => {
+export const deleteSharedFile = async (
+  organizationName,
+  fileName,
+  filePathInfo
+) => {
   try {
-    const response = await axiosInstance.delete(
-      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`
+    const response = await axiosInstance.post(
+      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`,
+      filePathInfo
     );
     if (response.status === 200) {
       alert("파일 공유가 중지되었습니다");
