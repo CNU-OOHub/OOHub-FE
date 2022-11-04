@@ -328,6 +328,7 @@ export const addSharedFileInOrganization = async (
       }
     );
     if (response.status === 200) {
+      window.location.replace(`/home`);
       alert("공유파일이 등록되었습니다");
     }
   } catch (error) {
@@ -373,6 +374,7 @@ export const deleteSharedFile = async (
       filePathInfo
     );
     if (response.status === 200) {
+      window.location.replace(`/home`);
       alert("파일 공유가 중지되었습니다");
     }
   } catch (error) {

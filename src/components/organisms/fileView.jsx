@@ -223,7 +223,7 @@ const FileView = () => {
       refetchShared().then(() => {
         console.log("공유파일? " + JSON.stringify(sharedFileData.contents));
         setIsSharedFileClicked(false);
-        changeFileContent("contents", sharedFileData.contents);
+        changeFileContent("contents", sharedFileData.contents.join("\r\n"));
         setIsFileShared(true);
       });
     }
@@ -319,6 +319,7 @@ const FileView = () => {
     let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
     const pathIndex = filePath; // 클릭한 파일의 위치(배열)
     console.log(pathIndex);
+    setSharedFileOrganizationName(groupName);
     setOpendGroupName(groupName);
     setOpenedFileName(fileName);
     changeFilePath("filePath", filePath);
