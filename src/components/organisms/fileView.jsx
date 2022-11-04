@@ -27,7 +27,7 @@ import {
   useGetFile,
   addSharedFileInOrganization,
   deleteSharedFile,
-  useGetSharedFileContent
+  useGetSharedFileContent,
 } from "../../api";
 import { useMutation } from "@tanstack/react-query";
 import { BsFolderPlus } from "react-icons/bs";
@@ -118,7 +118,8 @@ const FileView = () => {
   const [myFileMenuOpened, SetMyFileMenuOpened] = useState(false);
   const [isFileShared, setIsFileShared] = useState(false);
   const [openedFileName, setOpenedFileName] = useState("파일명");
-  const [sharedFileOrganizationName, setSharedFileOrganizationName] = useState("그룹명");
+  const [sharedFileOrganizationName, setSharedFileOrganizationName] =
+    useState("그룹명");
   const [opendGroupName, setOpendGroupName] = useState("클릭된그룹명");
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
@@ -145,7 +146,6 @@ const FileView = () => {
   const [isFileClicked, setIsFileClicked] = useState(false);
   const [isSharedFileClicked, setIsSharedFileClicked] = useState(false);
 
-
   // 사용자가 속한 그룹 get
   const { data: groups, isLoading: getOrganizationIsLoading } =
     useGetAllOrganizations(localStorage.getItem("username"));
@@ -164,13 +164,13 @@ const FileView = () => {
     data: fileData,
   } = useGetFile(filePathInfo);
 
-    // 공유 파일 정보 조회
-    const {
-      isLoading: isLoadingGetSharedFile,
-      refetch: refetchShared,
-      data: sharedFileData,
-    } = useGetSharedFileContent(opendGroupName, openedFileName, filePathInfo);
-  
+  // 공유 파일 정보 조회
+  const {
+    isLoading: isLoadingGetSharedFile,
+    refetch: refetchShared,
+    data: sharedFileData,
+  } = useGetSharedFileContent(opendGroupName, openedFileName, filePathInfo);
+
   if (!myFilesIsLoading) {
     // console.log(myFiles);
     // TODO : 내 파일들의 path 저장
@@ -220,7 +220,7 @@ const FileView = () => {
 
     if (isSharedFileClicked) {
       refetchShared().then(() => {
-        console.log("공유파일? "+JSON.stringify(sharedFileData.contents));
+        console.log("공유파일? " + JSON.stringify(sharedFileData.contents));
         setIsSharedFileClicked(false);
         changeFileContent("contents", sharedFileData.contents);
         setIsFileShared(true);
@@ -313,19 +313,17 @@ const FileView = () => {
     setIsFileClicked(true);
   };
 
-
-    // 공유 파일 클릭
-    const sharedFileCliked = (filePath,fileName,groupName) => {
-      let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
-      const pathIndex = filePath; // 클릭한 파일의 위치(배열)
-      console.log(pathIndex);
-      setOpendGroupName(groupName);
-      setOpenedFileName(fileName);
-      changeFilePath("filePath", filePath);
-      setIsSharedFileClicked(true);
-      setFileName(fileName);
-    };
-
+  // 공유 파일 클릭
+  const sharedFileCliked = (filePath, fileName, groupName) => {
+    let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
+    const pathIndex = filePath; // 클릭한 파일의 위치(배열)
+    console.log(pathIndex);
+    setOpendGroupName(groupName);
+    setOpenedFileName(fileName);
+    changeFilePath("filePath", filePath);
+    setIsSharedFileClicked(true);
+    setFileName(fileName);
+  };
 
   const clickedFileSharing = () => {
     addSharedFileInOrganization(sharedFileOrganizationName, filePathInfo);
@@ -434,7 +432,11 @@ const FileView = () => {
                               />
                               <Text
                                 onClick={() => {
-                                  sharedFileCliked(fileInfo.filepath, fileInfo.filename,group);
+                                  sharedFileCliked(
+                                    fileInfo.filepath,
+                                    fileInfo.filename,
+                                    group
+                                  );
                                 }}
                                 color={theme.lightGreyColor}
                                 fontSize={0.9}
@@ -523,7 +525,10 @@ const FileView = () => {
               onChange={onTreeStateChange}
               showCheckbox={false}
               onNameClick={(fileInfo) => {
-                fileClicked(fileInfo);
+                if (!fileInfo.nodeData.isOpen) {
+                  // 파일일 때
+                  fileClicked(fileInfo);
+                }
               }}
             />
           </div>
