@@ -8,10 +8,8 @@ import Home from "./components/pages/home";
 import LogIn from "./components/pages/logIn";
 import SignUp from "./components/pages/signUp";
 import Monitoring from "./components/pages/monitoring";
-import { AxiosInterCeptor } from "./axiosInterceptor";
 
 const Router = () => {
-  AxiosInterCeptor();
   const adminCategoryModalVisible = useRecoilValue(
     adminCategoryModalVisibleState
   );
