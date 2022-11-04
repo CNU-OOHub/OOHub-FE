@@ -332,12 +332,22 @@ export const addSharedFileInOrganization = async (
 };
 
 // 공유파일 내용 조회
-export const getSharedFileContent = async (organizationName, fileName) => {
+export const useGetSharedFileContent = (organizationName, fileName,filePath) => {
+  return useQuery(["file"], () => getSharedFileContent(organizationName, fileName,filePath), {
+    staleTime: 5000,
+    cacheTime: Infinity,
+    enabled: filePath.length > 0,
+  });
+};
+
+export const getSharedFileContent = async (organizationName, fileName,filePath) => {
   try {
-    const { data } = await axiosInstance.get(
-      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`
+    const response = await axios.post(
+      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}/info`,
+      filePath
     );
-    return data;
+    console.log("api test:"+ JSON.stringify(response.data));
+    return response.data;
   } catch (err) {
     throw new Error("fetch shared file content error");
   }
