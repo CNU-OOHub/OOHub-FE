@@ -1,11 +1,15 @@
 import SERVER from "./url";
 import axios from "axios";
 import { useQuery, useQueries } from "@tanstack/react-query";
+import { axiosInstance } from "./axiosInterceptor";
 
 // 회원가입
 export const addUser = async (userInfo) => {
   try {
-    const response = await axios.post(`${SERVER}/api/v1/join`, userInfo);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/v1/join`,
+      userInfo
+    );
     if (response.status === 200) {
       alert("회원가입 되었습니다");
     }
@@ -20,9 +24,13 @@ export const addUser = async (userInfo) => {
 // 로그인
 export const authUser = async (userInfo) => {
   try {
-    const response = await axios.post(`${SERVER}/api/v1/login`, userInfo);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/v1/login`,
+      userInfo
+    );
     if (response.status === 200) {
       sessionStorage.setItem("accessToken", response.data.token);
+      sessionStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("departmentName", response.data.departmentName);
       localStorage.setItem("isAdmin", response.data.isAdmin);
@@ -43,7 +51,10 @@ export const authUser = async (userInfo) => {
 // folder 생성
 export const addFolder = async (folderInfo) => {
   try {
-    const response = await axios.post(`${SERVER}/api/v1/folder`, folderInfo);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/v1/folder`,
+      folderInfo
+    );
     if (response.status === 200) {
       alert("폴더가 생성되었습니다.");
     }
@@ -56,7 +67,7 @@ export const addFolder = async (folderInfo) => {
 // folder 삭제
 export const deleteFolder = async (folderName, folderInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/folder/${folderName}`,
       folderInfo
     );
@@ -73,7 +84,7 @@ export const deleteFolder = async (folderName, folderInfo) => {
 // workspace 생성
 export const addWorkspace = async (workspaceInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/workspace`,
       workspaceInfo
     );
@@ -96,11 +107,9 @@ export const useWorkspaceUsage = () => {
 
 export const getWorkspaceUsage = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/workspace/storage`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const { data } = await axiosInstance.get(
+      `${SERVER}/api/v1/workspace/storage`
+    );
     return data;
   } catch (err) {
     throw new Error("fetch worksapce usage error");
@@ -111,7 +120,7 @@ export const getWorkspaceUsage = async () => {
 // 부서 목록 조회
 export const getAllDepartments = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/department`, {});
+    const { data } = await axiosInstance.get(`${SERVER}/api/v1/department`);
     return data;
   } catch (err) {
     throw new Error("fetch department error");
@@ -128,7 +137,7 @@ export const useGetAllDepartments = () => {
 // 부서 추가
 export const addDepartment = async (departmentInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/department`,
       departmentInfo
     );
@@ -145,11 +154,7 @@ export const addDepartment = async (departmentInfo) => {
 // organization 전체 목록 조회
 export const getAdminOrganizations = async () => {
   try {
-    const { data } = await axios.get(`${SERVER}/api/v1/organization`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const { data } = await axiosInstance.get(`${SERVER}/api/v1/organization`);
     return data;
   } catch (err) {
     throw new Error("fetch organization error");
@@ -166,14 +171,9 @@ export const useGetAdminOrganization = () => {
 // organization 생성
 export const addOrganization = async (organizationInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/organization`,
-      organizationInfo,
-      {
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      }
+      organizationInfo
     );
     if (response.status === 200) {
       alert("organization이 등록되었습니다");
@@ -187,7 +187,7 @@ export const addOrganization = async (organizationInfo) => {
 // organization 삭제
 export const deleteOrganization = async (organizationName) => {
   try {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `${SERVER}/api/v1/organization/${organizationName}`
     );
     if (response.status === 200) {
@@ -205,7 +205,7 @@ export const deleteOrganization = async (organizationName) => {
 // organization에 사용자 추가
 export const addUserInOrganization = async (organizationName, userInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/organization/${organizationName}`,
       userInfo
     );
@@ -226,7 +226,7 @@ export const addUserInOrganization = async (organizationName, userInfo) => {
 // organization에서 사용자 삭제
 export const deleteOrganizationMember = async (organizationName, username) => {
   try {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `${SERVER}/api/v1/organization/${organizationName}/${username}`
     );
     if (response.status === 200) {
@@ -251,9 +251,8 @@ export const useGetAllOrganizations = (username) => {
 
 export const getAllOrganizations = async (username) => {
   try {
-    const { data } = await axios.get(
-      `${SERVER}/api/v1/organization/${username}/all`,
-      {}
+    const { data } = await axiosInstance.get(
+      `${SERVER}/api/v1/organization/${username}/all`
     );
     return data;
   } catch (err) {
@@ -264,9 +263,8 @@ export const getAllOrganizations = async (username) => {
 // 그룹의 사용자 목록 조회
 export const getOrganizationMemberList = async (organizationName) => {
   try {
-    const { data } = await axios.get(
-      `${SERVER}/api/v1/organization/${organizationName}`,
-      {}
+    const { data } = await axiosInstance.get(
+      `${SERVER}/api/v1/organization/${organizationName}`
     );
     return data;
   } catch (error) {
@@ -305,13 +303,8 @@ export const useGetAllSharedFiles = (organizationNames) => {
 
 export const getAllSharedFiles = async (organizationName) => {
   try {
-    const { data } = await axios.get(
-      `${SERVER}/api/v1/${organizationName}/sharedFile`,
-      {
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      }
+    const { data } = await axiosInstance.get(
+      `${SERVER}/api/v1/${organizationName}/sharedFile`
     );
     return data;
   } catch (err) {
@@ -325,7 +318,7 @@ export const addSharedFileInOrganization = async (
   sharedFileInfo
 ) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/${organizationName}/sharedFile`,
       sharedFileInfo
     );
@@ -341,9 +334,8 @@ export const addSharedFileInOrganization = async (
 // 공유파일 내용 조회
 export const getSharedFileContent = async (organizationName, fileName) => {
   try {
-    const { data } = await axios.get(
-      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`,
-      {}
+    const { data } = await axiosInstance.get(
+      `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`
     );
     return data;
   } catch (err) {
@@ -354,7 +346,7 @@ export const getSharedFileContent = async (organizationName, fileName) => {
 // 그룹내 파일 공유 중지
 export const deleteSharedFile = async (organizationName, fileName) => {
   try {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}`
     );
     if (response.status === 200) {
@@ -369,7 +361,10 @@ export const deleteSharedFile = async (organizationName, fileName) => {
 // 파일로 실행
 export const runFile = async (contents) => {
   try {
-    const response = await axios.post(`${SERVER}/api/run/file`, contents);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/run/file`,
+      contents
+    );
     if (response.status === 200) {
       console.log("실행 완료");
       console.log(response);
@@ -383,7 +378,10 @@ export const runFile = async (contents) => {
 // 코드 한줄 실행
 export const runLine = async (command) => {
   try {
-    const response = await axios.post(`${SERVER}/api/run/line`, command);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/run/line`,
+      command
+    );
     if (response.status === 200) {
       console.log(response);
       return response.data;
@@ -404,7 +402,7 @@ export const useGetFile = (filePathInfo) => {
 
 export const getFile = async (filePathInfo) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${SERVER}/api/v1/files/info`,
       filePathInfo
     );
@@ -421,17 +419,12 @@ export const getFile = async (filePathInfo) => {
 export const useGetFiles = () => {
   return useQuery(["files"], () => getAllFile(), {
     staleTime: 5000,
-    cacheTime: Infinity,
   });
 };
 
 export const getAllFile = async () => {
   try {
-    const response = await axios.get(`${SERVER}/api/v1/files/all`, {
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const response = await axiosInstance.get(`${SERVER}/api/v1/files/all`);
     return response.data;
   } catch (err) {
     throw new Error("read all file error");
@@ -441,7 +434,10 @@ export const getAllFile = async () => {
 // 파일 저장
 export const addFile = async (fileInfo) => {
   try {
-    const response = await axios.post(`${SERVER}/api/v1/files`, fileInfo);
+    const response = await axiosInstance.post(
+      `${SERVER}/api/v1/files`,
+      fileInfo
+    );
     if (response.status === 200) {
       alert("파일이 저장되었습니다.");
     }
@@ -461,9 +457,8 @@ export const useGetResources = () => {
 
 export const getAllResource = async () => {
   try {
-    const response = await axios.get(
-      `${SERVER}/api/v1/monitoring/resources`,
-      {}
+    const response = await axiosInstance.get(
+      `${SERVER}/api/v1/monitoring/resources`
     );
     return response;
   } catch (err) {
