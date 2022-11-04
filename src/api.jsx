@@ -23,6 +23,7 @@ export const authUser = async (userInfo) => {
     const response = await axios.post(`${SERVER}/api/v1/login`, userInfo);
     if (response.status === 200) {
       sessionStorage.setItem("accessToken", response.data.token);
+      sessionStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("username", response.data.username);
       localStorage.setItem("departmentName", response.data.departmentName);
       localStorage.setItem("isAdmin", response.data.isAdmin);

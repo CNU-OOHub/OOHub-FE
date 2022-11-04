@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { adminState, loginState } from "../../atom";
-import { FOLDER, GROUPS } from "../../constants";
+import { FOLDER, GROUPS, SETTING } from "../../constants";
 import theme from "../../styles/theme";
 import Body from "../atoms/body";
 import FlexRow from "../molecules/flexRow";

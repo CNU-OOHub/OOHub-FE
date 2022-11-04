@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { adminState, fileShareState, loginState } from "../../atom";
+import { useRecoilState } from "recoil";
+import { adminState, loginState } from "../../atom";
 import theme from "../../styles/theme";
-import Body from "../atoms/body";
 import {
-  AiOutlineFolderOpen,
-  AiOutlineSetting,
   AiOutlineSearch,
   AiFillCaretDown,
   AiFillCaretUp,
-  AiOutlineFolder,
   AiOutlineFile,
 } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
-import { RiGroup2Line } from "react-icons/ri";
 import Button from "../atoms/button";
-import { CONSOLE, FOLDER, GROUPS, SETTING, TERMINAL } from "../../constants";
+import { CONSOLE, TERMINAL } from "../../constants";
 import styled from "styled-components";
 import FlexRow from "../molecules/flexRow";
 import Text from "../atoms/text";
@@ -31,17 +26,13 @@ import {
   useGetFiles,
   useGetFile,
 } from "../../api";
-import { QueryClient, useMutation } from "@tanstack/react-query";
-import { IoCloseOutline } from "react-icons/io5";
+import { useMutation } from "@tanstack/react-query";
 import { BsFolderPlus } from "react-icons/bs";
 import { FiFilePlus } from "react-icons/fi";
-import { GoOrganization } from "react-icons/go";
 import { BiGroup } from "react-icons/bi";
 import { Fragment } from "react";
-import FlexColumn from "../molecules/flexColumn";
-import { useRef } from "react";
 
-import FolderTree, { testData } from "react-folder-tree";
+import FolderTree from "react-folder-tree";
 import "react-folder-tree/dist/style.css";
 
 const FileList = styled.div`
@@ -106,7 +97,7 @@ const TerminalHeader = styled.div`
 
 const Scroll = styled.div`
   width: 100%;
-  height: 100%;
+  height: 10.5rem;
   align-content: center;
   align-items: center;
   text-align: center;
@@ -137,6 +128,7 @@ const FileView = () => {
  */
 
   const [terminalOpened, setTerminalOpened] = useState(CONSOLE);
+  // TODO:
   // openedFile에 클릭한 파일명을 가져와서 넣고
   // "" 이 아닐때만 file 몸통 보여주기. ""이면 그냥 oohub 파일을 눌러주세요! 이런거 나오게
   // fileShare recoil은 필요 없을 듯. 굳이 recoil로 안하고 그냥 useState에다가 저장만 해도 될듯.
@@ -357,6 +349,7 @@ const FileView = () => {
               display: "flex",
               flexDirection: "column",
               marginBottom: "0.5rem",
+              marginLeft: "0.7rem",
               width: "min-content",
             }}
           >
@@ -364,15 +357,15 @@ const FileView = () => {
               groupNames.map((group, idx) => {
                 return (
                   <div
-                    style={{ display: "flex", flexDirection: "column" }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      //   marginBottom: "0.5rem",
+                    }}
                     key={group}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <BiGroup
-                        size={15}
-                        color={theme.lightGreyColor}
-                        style={{ marginLeft: "0.5rem" }}
-                      />
+                      <BiGroup size={15} color={theme.lightGreyColor} />
                       <Text
                         color={theme.lightGreyColor}
                         fontSize={0.9}
@@ -478,6 +471,7 @@ const FileView = () => {
               flexDirection: "column",
               color: theme.lightGreyColor,
               marginBottom: "0.5rem",
+              marginLeft: "0.5rem",
               width: "min-content",
               fontWeight: 600,
               fontSize: "0.9rem",
