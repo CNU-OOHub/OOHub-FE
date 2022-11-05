@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { adminState, loginState } from "../../atom";
 import theme from "../../styles/theme";
 import {
@@ -54,6 +54,15 @@ const FileList = styled.div`
 const SearchArea = styled.div`
   height: 4rem;
   padding-top: 1rem;
+`;
+
+const NoneFile = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 92vh;
+  background-color: ${theme.blackGreyColor};
+  justify-content: center;
 `;
 
 const File = styled.div`
@@ -125,6 +134,7 @@ const FileView = () => {
     useState("그룹명");
   const [opendGroupName, setOpendGroupName] = useState("클릭된그룹명");
   const [readOnly, setReadOnly] = useState(false);
+  const [fileDefaultState, setFileDefaultState] = useState(true);
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
  /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
@@ -240,7 +250,7 @@ const FileView = () => {
     }
   });
 
-  useEffect(()=> {
+  useEffect(() => {
     if (isSharedFileClicked) {
       refetchShared().then(() => {
         console.log("공유파일? " + JSON.stringify(sharedFileData.contents));
@@ -257,7 +267,6 @@ const FileView = () => {
 
   const changeFileContent = (name, changedValue) => {
     setFileContents((prev) => ({ ...prev, [name]: changedValue }));
-    // console.log(fileContents);
   };
 
   const changeFilePath = (name, changedValue) => {
@@ -266,7 +275,6 @@ const FileView = () => {
 
   const changeTerminalLine = (name, changedValue) => {
     setTerminalLine((prev) => ({ ...prev, [name]: changedValue }));
-    // console.log(terminalLine);
   };
 
   const addTerminalDivList = () => {
@@ -274,9 +282,6 @@ const FileView = () => {
   };
 
   const changeTerminalItem = (command, result) => {
-    console.log(command);
-    console.log(result);
-
     setTerminalItem((prev) => ({ ...prev, command: command }));
     setTerminalItem((prev) => ({ ...prev, result: result }));
 
@@ -285,8 +290,6 @@ const FileView = () => {
       command: command,
       result: result,
     });
-
-    console.log(terminalDivList);
   };
 
   const executeFileMutation = useMutation(
@@ -302,7 +305,6 @@ const FileView = () => {
     (terminalLine) => runLine(terminalLine),
     {
       onSuccess: (data) => {
-        console.log(data.result[0]);
         setRunTerminalResult(data.result);
         changeTerminalItem(terminalLine, data.result);
       },
@@ -327,7 +329,6 @@ const FileView = () => {
     let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
     let temp = myFiles; // 클릭한 파일의 부모 path
     const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
-    console.log(pathIndex);
     for (var i = 0; i < pathIndex.length; i++) {
       path += "/" + temp.children[pathIndex[i]].name;
       temp = temp.children[pathIndex[i]];
@@ -335,6 +336,7 @@ const FileView = () => {
     setOpenedFileName(fileInfo.nodeData.name);
     changeFilePath("filePath", path);
     setIsFileClicked(true);
+    setFileDefaultState(false);
   };
 
   // 공유 파일 클릭
@@ -345,6 +347,7 @@ const FileView = () => {
     setOpenedFileName(fileName);
     changeFilePath("filePath", filePath);
     setIsSharedFileClicked(true);
+    setFileDefaultState(false);
     setFileName(fileName);
   };
 
@@ -442,7 +445,6 @@ const FileView = () => {
                         useSharedFiles[idx]["data"].length > 0 &&
                         // useSharedFiles[idx]["data"][0] !== undefined &&
                         useSharedFiles[idx]["data"].map((fileInfo) => {
-                          console.log(fileInfo);
                           return (
                             <div
                               key={fileInfo.filepath}
@@ -455,11 +457,13 @@ const FileView = () => {
                               />
                               <Text
                                 onClick={() => {
-                                  sharedFileCliked(
-                                    fileInfo.filepath,
-                                    fileInfo.filename,
-                                    group
-                                  );
+                                  if (fileInfo.filepath) {
+                                    sharedFileCliked(
+                                      fileInfo.filepath,
+                                      fileInfo.filename,
+                                      group
+                                    );
+                                  }
                                 }}
                                 color={theme.lightGreyColor}
                                 fontSize={0.9}
@@ -557,203 +561,243 @@ const FileView = () => {
           </div>
         )}
       </FileList>
-      <File>
-        <FileHeader>
-          <FlexRow justifyContent="center" flexGrow={1}>
-            <Text color={theme.textGreyColor} fontSize={1}>
-              {openedFileName}
-            </Text>
-            <IoIosClose size={20} color={theme.textGreyColor} />
-            <div style={{ marginLeft: "3vh", display: "flex" }}>
-              <VscRunAll
-                size="20"
-                color="green"
-                style={{ cursor: "pointer" }}
+      {fileDefaultState ? (
+        <NoneFile>
+          <Text
+            fontSize={2}
+            fontWeight={700}
+            marginLeft="auto"
+            marginRight="auto"
+            color={theme.lightGreyColor}
+          >
+            WELCOME TO OOHUB!!{"\n"}
+          </Text>
+          <Text
+            fontSize={2}
+            fontWeight={700}
+            marginLeft="auto"
+            marginRight="auto"
+            color={theme.lightGreyColor}
+          >
+            CLICK FILE YOU WANT :)
+          </Text>
+          <Text fontSize={10} color={theme.blackGreyColor}>
+            ARE YOU HACKER?
+          </Text>
+        </NoneFile>
+      ) : (
+        <File>
+          <FileHeader>
+            <FlexRow justifyContent="center" flexGrow={1}>
+              <Text color={theme.textGreyColor} fontSize={1}>
+                {openedFileName}
+              </Text>
+              <IoIosClose
+                size={20}
+                color={theme.textGreyColor}
                 onClick={() => {
-                  executeFile();
+                  setFileDefaultState(true);
                 }}
               />
-              {/* 저장 */}
-              <BiSave
-                size={25}
-                style={{ marginLeft: "1rem" }}
-                color="orange"
-                onClick={() => {
-                  console.log(fileContents.contents);
-                  console.log(filePathInfo.filePath);
-                  const originalPath = filePathInfo.filePath;
-                  //   console.log(fileContents.contents)
-                  if (originalPath !== undefined) {
-                    fileSaveMutation.mutate(
-                      fileContents.contents,
-                      originalPath,
-                      originalPath
-                    );
-                  }
+              <div style={{ marginLeft: "3vh", display: "flex" }}>
+                <VscRunAll
+                  size="20"
+                  color="green"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    executeFile();
+                  }}
+                />
+                {/* 저장 */}
+                {!readOnly && (
+                  <BiSave
+                    size={25}
+                    style={{ marginLeft: "1rem" }}
+                    color="orange"
+                    onClick={() => {
+                      const originalPath = filePathInfo.filePath;
+                      if (originalPath !== undefined) {
+                        fileSaveMutation.mutate(
+                          fileContents.contents,
+                          originalPath,
+                          originalPath
+                        );
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            </FlexRow>
+            <div style={{ width: "6rem" }}>
+              <DropDown
+                onChange={(e) => {
+                  setSharedFileOrganizationName(e.target.value);
                 }}
+                options={getOrganizationIsLoading ? [] : groupNames}
+                placeholder={"그룹명"}
+                selectedValue={sharedFileOrganizationName}
+                color={theme.textGreyColor}
+                height={2}
+                fontSize={1.0}
+                backgroundColor="#373737"
+                disabled={isFileShared}
               />
             </div>
-          </FlexRow>
-          <div style={{ width: "6rem" }}>
-            <DropDown
+            <FlexRow flexGrow={1} justifyContent="center">
+              {readOnly ? (
+                <Text></Text>
+              ) : (
+                <>
+                  <Text
+                    color={theme.textGreyColor}
+                    fontSize={1}
+                    marginRight={10}
+                  >
+                    공유
+                  </Text>
+                  <Switch
+                    onChange={(e) => {
+                      if (sharedFileOrganizationName === "") {
+                        alert("그룹명을 선택하여 주세요.");
+                      } else {
+                        if (isFileShared) {
+                          setIsFileShared(false);
+                          clickedFileSharingStop();
+                        } else {
+                          setIsFileShared(true);
+                          clickedFileSharing();
+                        }
+                      }
+                    }}
+                    checked={isFileShared}
+                    onColor={theme.primaryColor}
+                    handleDiameter={17}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
+                    width={45}
+                    height={25}
+                  />
+                </>
+              )}
+            </FlexRow>
+          </FileHeader>
+          <FileContainer>
+            <FileContent
+              readOnly={readOnly ? "readOnly" : ""}
+              name="fileContentArea"
+              value={fileContents ? fileContents.contents : ""}
               onChange={(e) => {
-                setSharedFileOrganizationName(e.target.value);
+                changeFileContent("contents", e.target.value);
               }}
-              options={getOrganizationIsLoading ? [] : groupNames}
-              placeholder={"그룹명"}
-              selectedValue={sharedFileOrganizationName}
-              color={theme.textGreyColor}
-              height={2}
-              fontSize={1.0}
-              backgroundColor="#373737"
-              disabled={isFileShared}
-            />
-          </div>
-          <FlexRow flexGrow={1} justifyContent="center">
-            {readOnly?(<Text></Text>):(
-          <>
-            <Text color={theme.textGreyColor} fontSize={1} marginRight={10}>공유</Text>
-            <Switch
-            onChange={(e) => {
-              if (sharedFileOrganizationName === "") {
-                alert("그룹명을 선택하여 주세요.");
-              } else {
-                if (isFileShared) {
-                  setIsFileShared(false);
-                  clickedFileSharingStop();
-                } else {
-                  setIsFileShared(true);
-                  clickedFileSharing();
+            ></FileContent>
+          </FileContainer>
+          <Terminal>
+            <TerminalHeader>
+              <Button
+                color={
+                  terminalOpened === CONSOLE ? "white" : theme.lightGreyColor
                 }
-              }
-            }}
-            checked={isFileShared}
-            onColor={theme.primaryColor}
-            handleDiameter={17}
-            uncheckedIcon={false}
-            checkedIcon={false}
-            width={45}
-            height={25}
-          /></>
-            )}
-          </FlexRow>
-        </FileHeader>
-        <FileContainer>
-          <FileContent
-            readOnly={readOnly? "readOnly": ""}
-            name="fileContentArea"
-            value={fileContents ? fileContents.contents : ""}
-            onChange={(e) => {
-              changeFileContent("contents", e.target.value);
-            }}
-          ></FileContent>
-        </FileContainer>
-        <Terminal>
-          <TerminalHeader>
-            <Button
-              color={
-                terminalOpened === CONSOLE ? "white" : theme.lightGreyColor
-              }
-              fontSize={0.8}
-              bgColor={theme.blackGreyColor}
-              height={2}
-              marginRight={2}
-              fontWeight={400}
-              onClick={() => {
-                terminalClicked(CONSOLE);
-              }}
-              {...(terminalOpened === CONSOLE && {
-                borderBottom: "1px solid white",
-              })}
-            >
-              콘솔
-            </Button>
-            <Button
-              color={
-                terminalOpened === TERMINAL ? "white" : theme.lightGreyColor
-              }
-              fontSize={0.8}
-              bgColor={theme.blackGreyColor}
-              height={2}
-              fontWeight={400}
-              onClick={(e) => {
-                terminalClicked(TERMINAL);
-              }}
-              {...(terminalOpened === TERMINAL && {
-                borderBottom: "1px solid white",
-              })}
-            >
-              터미널
-            </Button>
-          </TerminalHeader>
-          {terminalOpened === TERMINAL ? (
-            // 터미널
-            <Scroll>
-              <div style={{ color: "white", padding: "10px", float: "left" }}>
-                <text
-                  style={{
-                    color: "white",
-                    float: "left",
-                    outline: "none",
-                    fontWeight: "bolder",
-                  }}
-                >
-                  {">>>  "}{" "}
-                </text>
-                <input
-                  type={"text"}
-                  style={{
-                    outline: "none",
-                    backgroundColor: theme.blackGreyColor,
-                    color: "white",
-                    border: "none",
-                    float: "left",
-                    marginLeft: "10px",
-                  }}
-                  onChange={(e) => {
-                    changeTerminalLine("command", e.target.value);
-                  }}
-                  onKeyDown={(e) => {
-                    terminalEntered(e);
-                  }}
-                ></input>
-                <br></br>
-                <p
-                  color="white"
-                  style={{
-                    fontSize: "1.2rem",
-                    fontWeight: "normal",
-                    float: "left",
-                  }}
-                >
-                  {terminalItem.result}
-                </p>
-              </div>
-              ;
-            </Scroll>
-          ) : (
-            // 콘솔
-            <Scroll>
-              <div style={{ color: "white", padding: "10px", float: "left" }}>
-                {runConsoleResult.map((result) => {
-                  return (
-                    <p
-                      color="white"
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "normal",
-                        textAlign: "left",
-                      }}
-                    >
-                      {result}
-                    </p>
-                  );
+                fontSize={0.8}
+                bgColor={theme.blackGreyColor}
+                height={2}
+                marginRight={2}
+                fontWeight={400}
+                onClick={() => {
+                  terminalClicked(CONSOLE);
+                }}
+                {...(terminalOpened === CONSOLE && {
+                  borderBottom: "1px solid white",
                 })}
-              </div>
-            </Scroll>
-          )}
-        </Terminal>
-      </File>
+              >
+                콘솔
+              </Button>
+              <Button
+                color={
+                  terminalOpened === TERMINAL ? "white" : theme.lightGreyColor
+                }
+                fontSize={0.8}
+                bgColor={theme.blackGreyColor}
+                height={2}
+                fontWeight={400}
+                onClick={(e) => {
+                  terminalClicked(TERMINAL);
+                }}
+                {...(terminalOpened === TERMINAL && {
+                  borderBottom: "1px solid white",
+                })}
+              >
+                터미널
+              </Button>
+            </TerminalHeader>
+            {terminalOpened === TERMINAL ? (
+              // 터미널
+              <Scroll>
+                <div style={{ color: "white", padding: "10px", float: "left" }}>
+                  <text
+                    style={{
+                      color: "white",
+                      float: "left",
+                      outline: "none",
+                      fontWeight: "bolder",
+                    }}
+                  >
+                    {">>>  "}{" "}
+                  </text>
+                  <input
+                    type={"text"}
+                    style={{
+                      outline: "none",
+                      backgroundColor: theme.blackGreyColor,
+                      color: "white",
+                      border: "none",
+                      float: "left",
+                      marginLeft: "10px",
+                    }}
+                    onChange={(e) => {
+                      changeTerminalLine("command", e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      terminalEntered(e);
+                    }}
+                  ></input>
+                  <br></br>
+                  <p
+                    color="white"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "normal",
+                      float: "left",
+                    }}
+                  >
+                    {terminalItem.result}
+                  </p>
+                </div>
+                ;
+              </Scroll>
+            ) : (
+              // 콘솔
+              <Scroll>
+                <div style={{ color: "white", padding: "10px", float: "left" }}>
+                  {runConsoleResult.map((result) => {
+                    return (
+                      <p
+                        color="white"
+                        style={{
+                          fontSize: "1.2rem",
+                          fontWeight: "normal",
+                          textAlign: "left",
+                        }}
+                      >
+                        {result}
+                      </p>
+                    );
+                  })}
+                </div>
+              </Scroll>
+            )}
+          </Terminal>
+        </File>
+      )}
     </>
   );
 };

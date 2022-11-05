@@ -42,7 +42,7 @@ const SideMenu = () => {
           style={{
             marginTop: "1rem",
             width: "100%",
-            borderLeft: sideMenu === FOLDER ? "5px solid white" : "none",
+            borderLeft: sideMenu === FOLDER ? "4px solid white" : "none",
           }}
           size={35}
           color={sideMenu === FOLDER ? "white" : theme.lightGreyColor}
@@ -53,7 +53,7 @@ const SideMenu = () => {
           style={{
             marginTop: "1rem",
             width: "100%",
-            borderLeft: sideMenu === GROUPS ? "5px solid white" : "none",
+            borderLeft: sideMenu === GROUPS ? "4px solid white" : "none",
           }}
           size={35}
           color={sideMenu === GROUPS ? "white" : theme.lightGreyColor}
@@ -67,7 +67,7 @@ const SideMenu = () => {
           style={{
             marginTop: "1rem",
             width: "100%",
-            borderLeft: sideMenu === SETTING ? "5px solid white" : "none",
+            borderLeft: sideMenu === SETTING ? "4px solid white" : "none",
           }}
           size={35}
           color={sideMenu === SETTING ? "white" : theme.lightGreyColor}
@@ -75,11 +75,10 @@ const SideMenu = () => {
       </Button>
       <BiLogOut
         style={{
-          bottom: 65,
+          bottom: 30,
           width: "3rem",
           alignSelf: "center",
           position: "absolute",
-          padding: "0",
         }}
         size={30}
         color={"white"}
