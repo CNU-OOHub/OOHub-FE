@@ -35,7 +35,7 @@ const AdminContent = styled.div`
   display: flex;
   flex-direction: row;
   vertical-align: middle;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   padding-left: 3rem;
   padding-right: 3rem;
@@ -46,6 +46,7 @@ const OrganizationContent = styled.div`
   height: 67vh;
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
   padding-left: 3rem;
   padding-right: 3rem;
 `;
@@ -274,6 +275,15 @@ const OrganizationView = () => {
               그룹 생성
             </Button>
           </CreateGroup>
+          <MiddleContent>
+            <BiArrowFromLeft
+              style={{
+                width: "50",
+                height: "50",
+                color: `${theme.darkGreyColor}`,
+              }}
+            />
+          </MiddleContent>
           <InsertUser>
             <Input
               id="usernameInput"
