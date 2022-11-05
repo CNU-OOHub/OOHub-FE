@@ -87,7 +87,7 @@ const FileContent = styled.textarea`
   background-color: ${theme.blackGreyColor};
   border: none;
   white-space: pre-wrap;
-  
+  outline: none;
 `;
 
 const Terminal = styled.div`
@@ -124,7 +124,7 @@ const FileView = () => {
   const [sharedFileOrganizationName, setSharedFileOrganizationName] =
     useState("그룹명");
   const [opendGroupName, setOpendGroupName] = useState("클릭된그룹명");
-  const [textAreaReadOnly, setTextAreaReadOnly] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
  /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
@@ -323,7 +323,7 @@ const FileView = () => {
 
   // 파일 클릭
   const fileClicked = (fileInfo) => {
-    setTextAreaReadOnly(false);
+    setReadOnly(false);
     let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
     let temp = myFiles; // 클릭한 파일의 부모 path
     const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
@@ -339,7 +339,7 @@ const FileView = () => {
 
   // 공유 파일 클릭
   const sharedFileCliked = (filePath, fileName, groupName) => {
-    setTextAreaReadOnly(true);
+    setReadOnly(true);
     setSharedFileOrganizationName(groupName);
     setOpendGroupName(groupName);
     setOpenedFileName(fileName);
@@ -610,36 +610,37 @@ const FileView = () => {
             />
           </div>
           <FlexRow flexGrow={1} justifyContent="center">
-            <Text color={theme.textGreyColor} fontSize={1}>
-              공유
-            </Text>
+            {readOnly?(<Text></Text>):(
+          <>
+            <Text color={theme.textGreyColor} fontSize={1} marginRight={10}>공유</Text>
             <Switch
-              onChange={(e) => {
-                if (sharedFileOrganizationName === "") {
-                  alert("그룹명을 선택하여 주세요.");
+            onChange={(e) => {
+              if (sharedFileOrganizationName === "") {
+                alert("그룹명을 선택하여 주세요.");
+              } else {
+                if (isFileShared) {
+                  setIsFileShared(false);
+                  clickedFileSharingStop();
                 } else {
-                  if (isFileShared) {
-                    setIsFileShared(false);
-                    clickedFileSharingStop();
-                  } else {
-                    setIsFileShared(true);
-                    clickedFileSharing();
-                  }
+                  setIsFileShared(true);
+                  clickedFileSharing();
                 }
-              }}
-              checked={isFileShared}
-              onColor={theme.primaryColor}
-              handleDiameter={17}
-              uncheckedIcon={false}
-              checkedIcon={false}
-              width={45}
-              height={25}
-            />
+              }
+            }}
+            checked={isFileShared}
+            onColor={theme.primaryColor}
+            handleDiameter={17}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            width={45}
+            height={25}
+          /></>
+            )}
           </FlexRow>
         </FileHeader>
         <FileContainer>
           <FileContent
-            readOnly={textAreaReadOnly? "readOnly": ""}
+            readOnly={readOnly? "readOnly": ""}
             name="fileContentArea"
             value={fileContents ? fileContents.contents : ""}
             onChange={(e) => {
