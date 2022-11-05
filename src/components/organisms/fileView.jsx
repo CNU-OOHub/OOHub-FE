@@ -609,21 +609,23 @@ const FileView = () => {
                   }}
                 />
                 {/* 저장 */}
-                <BiSave
-                  size={25}
-                  style={{ marginLeft: "1rem" }}
-                  color="orange"
-                  onClick={() => {
-                    const originalPath = filePathInfo.filePath;
-                    if (originalPath !== undefined) {
-                      fileSaveMutation.mutate(
-                        fileContents.contents,
-                        originalPath,
-                        originalPath
-                      );
-                    }
-                  }}
-                />
+                {!readOnly && (
+                  <BiSave
+                    size={25}
+                    style={{ marginLeft: "1rem" }}
+                    color="orange"
+                    onClick={() => {
+                      const originalPath = filePathInfo.filePath;
+                      if (originalPath !== undefined) {
+                        fileSaveMutation.mutate(
+                          fileContents.contents,
+                          originalPath,
+                          originalPath
+                        );
+                      }
+                    }}
+                  />
+                )}
               </div>
             </FlexRow>
             <div style={{ width: "6rem" }}>
