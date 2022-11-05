@@ -83,7 +83,6 @@ function addSubscriber(requestCallback) {
 
 // subscriber 에 담긴 요청들 실행
 function executeSubscriber(accessToken) {
-  console.log(subscribers.length);
   subscribers.map((callback) => callback(accessToken));
   subscribers = [];
 }
