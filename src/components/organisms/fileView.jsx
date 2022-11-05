@@ -9,6 +9,7 @@ import {
   AiOutlineFile,
 } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
+import { BiSave } from "react-icons/bi";
 import Button from "../atoms/button";
 import { CONSOLE, TERMINAL } from "../../constants";
 import styled from "styled-components";
@@ -28,8 +29,9 @@ import {
   addSharedFileInOrganization,
   deleteSharedFile,
   useGetSharedFileContent,
+  addFile,
 } from "../../api";
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import { BsFolderPlus } from "react-icons/bs";
 import { FiFilePlus } from "react-icons/fi";
 import { BiGroup } from "react-icons/bi";
@@ -172,10 +174,23 @@ const FileView = () => {
     data: sharedFileData,
   } = useGetSharedFileContent(opendGroupName, openedFileName, filePathInfo);
 
-  if (!myFilesIsLoading) {
-    // console.log(myFiles);
-    // TODO : 내 파일들의 path 저장
-  }
+  // 파일 저장
+  const queryClient = new QueryClient();
+
+  const fileSaveMutation = useMutation(
+    () =>
+      addFile(
+        fileContents.contents,
+        filePathInfo.filePath,
+        filePathInfo.filePath
+      ),
+    {
+      onSuccess: () => {
+        alert("파일이 저장되었습니다");
+        queryClient.invalidateQueries();
+      },
+    }
+  );
 
   useEffect(() => {
     if (!getOrganizationIsLoading) {
@@ -210,6 +225,9 @@ const FileView = () => {
     if (localStorage.getItem("isAdmin") === "true") {
       setAdmin(true);
     }
+  }, []);
+
+  useEffect(() => {
     if (isFileClicked) {
       refetch().then(() => {
         setSharedFileOrganizationName(fileData.organizationName);
@@ -543,13 +561,32 @@ const FileView = () => {
               {openedFileName}
             </Text>
             <IoIosClose size={20} color={theme.textGreyColor} />
-            <div style={{ marginLeft: "3vh" }}>
+            <div style={{ marginLeft: "3vh", display: "flex" }}>
               <VscRunAll
                 size="20"
                 color="green"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   executeFile();
+                }}
+              />
+              {/* 저장 */}
+              <BiSave
+                size={25}
+                style={{ marginLeft: "1rem" }}
+                color="orange"
+                onClick={() => {
+                  console.log(fileContents.contents);
+                  console.log(filePathInfo.filePath);
+                  const originalPath = filePathInfo.filePath;
+                  //   console.log(fileContents.contents)
+                  if (originalPath !== undefined) {
+                    fileSaveMutation.mutate(
+                      fileContents.contents,
+                      originalPath,
+                      originalPath
+                    );
+                  }
                 }}
               />
             </div>

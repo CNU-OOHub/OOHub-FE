@@ -341,21 +341,33 @@ export const addSharedFileInOrganization = async (
 };
 
 // 공유파일 내용 조회
-export const useGetSharedFileContent = (organizationName, fileName,filePath) => {
-  return useQuery(["file"], () => getSharedFileContent(organizationName, fileName,filePath), {
-    staleTime: 5000,
-    cacheTime: Infinity,
-    enabled: filePath.length > 0,
-  });
+export const useGetSharedFileContent = (
+  organizationName,
+  fileName,
+  filePath
+) => {
+  return useQuery(
+    ["file"],
+    () => getSharedFileContent(organizationName, fileName, filePath),
+    {
+      staleTime: 5000,
+      cacheTime: Infinity,
+      enabled: filePath.length > 0,
+    }
+  );
 };
 
-export const getSharedFileContent = async (organizationName, fileName,filePath) => {
+export const getSharedFileContent = async (
+  organizationName,
+  fileName,
+  filePath
+) => {
   try {
     const response = await axios.post(
       `${SERVER}/api/v1/${organizationName}/sharedFile/${fileName}/info`,
       filePath
     );
-    console.log("api test:"+ JSON.stringify(response.data));
+    console.log("api test:" + JSON.stringify(response.data));
     return response.data;
   } catch (err) {
     throw new Error("fetch shared file content error");
@@ -457,17 +469,19 @@ export const getAllFile = async () => {
 };
 
 // 파일 저장
-export const addFile = async (fileInfo) => {
+export const addFile = async (contents, originalPath, updatePath) => {
   try {
-    const response = await axiosInstance.post(
-      `${SERVER}/api/v1/files`,
-      fileInfo
-    );
-    if (response.status === 200) {
-      alert("파일이 저장되었습니다.");
-    }
+    console.log(contents);
+    console.log(originalPath);
+    console.log(updatePath);
+    const response = await axiosInstance.post(`${SERVER}/api/v1/files`, {
+      contents: contents,
+      originalPath: originalPath,
+      updatePath: updatePath,
+    });
+    return response;
   } catch (error) {
-    throw new Error("sign up user error");
+    throw new Error("file save error");
   }
 };
 
