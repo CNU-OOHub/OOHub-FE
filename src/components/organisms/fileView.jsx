@@ -35,7 +35,6 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { BsFolderPlus } from "react-icons/bs";
 import { FiFilePlus } from "react-icons/fi";
 import { BiGroup } from "react-icons/bi";
-import { Fragment } from "react";
 
 import FolderTree from "react-folder-tree";
 import "react-folder-tree/dist/style.css";
@@ -88,6 +87,7 @@ const FileContent = styled.textarea`
   background-color: ${theme.blackGreyColor};
   border: none;
   white-space: pre-wrap;
+  
 `;
 
 const Terminal = styled.div`
@@ -124,6 +124,7 @@ const FileView = () => {
   const [sharedFileOrganizationName, setSharedFileOrganizationName] =
     useState("그룹명");
   const [opendGroupName, setOpendGroupName] = useState("클릭된그룹명");
+  const [textAreaReadOnly, setTextAreaReadOnly] = useState(false);
   /*
  일단 처음에 key들만 모아서 폴더명을 저장하는 애(folderNames)가 하나 있어야함. 
  /로 split해서 마지막 배열에 있는 값만 가져와서 folderNames 만들기.
@@ -230,19 +231,22 @@ const FileView = () => {
   useEffect(() => {
     if (isFileClicked) {
       refetch().then(() => {
+        setIsSharedFileClicked(false);
         setSharedFileOrganizationName(fileData.organizationName);
         changeFileContent("contents", fileData.contents.join("\r\n"));
         setIsFileShared(fileData.isShared);
         setIsFileClicked(false);
       });
     }
+  });
 
+  useEffect(()=> {
     if (isSharedFileClicked) {
       refetchShared().then(() => {
         console.log("공유파일? " + JSON.stringify(sharedFileData.contents));
-        setIsSharedFileClicked(false);
         changeFileContent("contents", sharedFileData.contents.join("\r\n"));
         setIsFileShared(true);
+        setIsSharedFileClicked(false);
       });
     }
   });
@@ -319,6 +323,7 @@ const FileView = () => {
 
   // 파일 클릭
   const fileClicked = (fileInfo) => {
+    setTextAreaReadOnly(false);
     let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
     let temp = myFiles; // 클릭한 파일의 부모 path
     const pathIndex = fileInfo.nodeData.path; // 클릭한 파일의 위치(배열)
@@ -334,9 +339,7 @@ const FileView = () => {
 
   // 공유 파일 클릭
   const sharedFileCliked = (filePath, fileName, groupName) => {
-    let path = "/" + myFiles.name; // 클릭한 파일의 path를 저장할 변수
-    const pathIndex = filePath; // 클릭한 파일의 위치(배열)
-    console.log(pathIndex);
+    setTextAreaReadOnly(true);
     setSharedFileOrganizationName(groupName);
     setOpendGroupName(groupName);
     setOpenedFileName(fileName);
@@ -636,13 +639,11 @@ const FileView = () => {
         </FileHeader>
         <FileContainer>
           <FileContent
+            readOnly={textAreaReadOnly? "readOnly": ""}
             name="fileContentArea"
             value={fileContents ? fileContents.contents : ""}
             onChange={(e) => {
               changeFileContent("contents", e.target.value);
-            }}
-            onKeyDown={(e) => {
-              // enterEvent()
             }}
           ></FileContent>
         </FileContainer>
@@ -688,12 +689,6 @@ const FileView = () => {
             // 터미널
             <Scroll>
               <div style={{ color: "white", padding: "10px", float: "left" }}>
-                {/* {terminalDivList &&
-                  terminalDivList.map((result,i)=>{
-                    console.log(result[i]);
-                    return <p color="white" style={{fontSize: "1.2rem", fontWeight:"normal",}}>{result[i]}</p>;
-                  })              
-              }  */}
                 <text
                   style={{
                     color: "white",
